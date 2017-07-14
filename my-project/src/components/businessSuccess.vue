@@ -19,52 +19,46 @@
       }
     },
     created: function () {
-      this.b = this.$route.query.b
+      this.b = this.$route.query.business
       this.amount = this.$route.query.amount
       this.number = this.$route.query.number
       bridgeUtil.setupWebViewJavascriptBridge()
       window.vue = this
       window.onload = function () {
-        window.vue.b === 'TRANSFER' ? window.vue.getCoupon() : window.vue.connectNative({'business': window.vue.b, 'amount': window.vue.amount})
+        if (window.vue.b === 'TRANSFER') {
+          window.vue.getCoupon()
+        } else if (!window.vue.amount) {
+          window.vue.connectNative({'business': window.vue.b})
+        } else {
+          window.vue.connectNative({'business': window.vue.b, 'amount': window.vue.amount})
+        }
       }
     },
     methods: {
       connectNative: function (dataList) {
-        console.log(1)
         bridgeUtil.webConnectNative('HCNative_SuccessCallback', '', dataList, function (response) {
         }, function (response) {})
       },
       getCoupon: function () {
         var that = this
         that.$http({
-          url: '/hongcai/rest/orders/' + that.number + '/orderCoupon?token=6261f5e1e9eb93e9479f8cf19c1b2e986ab535d7a0e01c51'
-        }).then((response) => {
+          url: '/hongcai/rest/orders/' + that.number + '/orderCoupon?token=69f8821b945dfc9e1ad9d54a496885db95a1625bc67d93b1'
+        }).then(function (response) {
           if (response && response.data.ret !== -1) {
-            var dataList = !that.number ? {
+            var dataList = {
               'business': that.b,
               'amount': that.amount
-            } : {
-              'business': that.b,
-              'amount': that.amount,
-              'number': that.number
             }
             if (response.data.coupon) {
               that.coupon.type = response.data.coupon.type
               that.coupon.value = response.data.coupon.value
-              dataList = that.coupon.type ? {
+              dataList = {
                 'business': that.b,
                 'amount': that.amount,
-                'number': that.number,
                 'coupon': that.coupon
-              } : {
-                'business': that.b,
-                'amount': that.amount,
-                'number': that.number
               }
-              that.connectNative(dataList)
-            } else {
-              that.connectNative(dataList)
             }
+            that.connectNative(dataList)
           }
         })
       }
