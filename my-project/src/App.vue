@@ -83,7 +83,7 @@ Vue.directive('auto-height', function (el, binding) {
 </script>
 
 <style lang="css">
-  @import 'css/common.css';
+  @import 'styles/common.css';
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
