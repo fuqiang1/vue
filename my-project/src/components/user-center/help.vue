@@ -1,5 +1,105 @@
 <template>
   <div class="help">
+    <!-- 预计回款 -->
+    <div v-if="type === '9'">
+      <div class="content">
+        <div class="column">
+          <div class="fl">债权本金</div>
+          <div class="fa-down-no txt-right fr">
+          </div>
+          <p class="fr">
+             {{transferAmount || 0}}元
+          </p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="column" @click="showOrHide($event)">
+          <div class="fl">本期待收收益</div>
+          <div class="fa-down txt-right fr">
+          </div>
+          <p class="fr">
+            {{profit | number}}元
+          </p>
+        </div>
+        <div class="submenu">
+          <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
+            本期代收利息是指该笔债权自本期计息日至今天所产生的待收利息：<br><br>
+            债权本金*原项目年均回报率*本期计息天数/365天<br>
+            {{transferAmount || 0}} * {{project.annualEarnings || 0}}% * {{profitDate || 0}} / 365 = {{profit | number}}元<br><br> 
+            如果该数值为负数，表示本期利息已经提前还款给您，此时债权转让需要扣除今日至本期还款日所产生的利息
+          </span>  
+        </div>
+      </div>
+      <div class="content">
+        <div class="column" @click="showOrHide($event)">
+          <div class="fl">债权转让奖金</div>
+          <div class="fa-down txt-right fr">
+          </div>
+          <p class="fr">
+            {{transferReward | number}}元
+          </p>
+        </div>
+        <div class="submenu">
+          <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
+            债权转让奖金是指您为了尽快转出债权，自愿提高项目回报率而补贴给受让人的奖励金额：<br><br>
+            债权本金 *（转让利率 - 原项目年均回报率）* 项目剩余天数/365天<br>
+            {{transferAmount || 0}} *（{{transferAnnul || 0}}% - {{project.annualEarnings || 0}}%）* {{remainDay}} / 365 = {{transferReward | number}}元
+          </span>  
+        </div>
+      </div>
+      <div class="content">
+        <div class="column" @click="showOrHide($event)">
+          <div class="fl">现金券奖励扣款</div>
+          <div class="fa-down txt-right fr">
+          </div>
+          <p class="fr">
+            {{deduction | number}}元
+          </p>
+        </div>
+        <div class="submenu">
+          <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
+            现金券奖励扣款是指宏财网按照您成功转出的债权金额等比例扣除您该笔投资所获得的现金券奖励：<br><br>
+            现金券奖励 * 债权本金 / 初始投资总额<br>
+            {{couponVal || 0}} * {{transferAmount || 0}} / {{creditAmount || 0}} = {{deduction | number}}元
+          </span>  
+        </div>
+      </div>
+      <div class="content">
+        <div class="column" @click="showOrHide($event)">
+          <div class="fl">债权转让手续费</div>
+          <div class="fa-down txt-right fr">
+          </div>
+          <p class="fr">
+            {{counterFee | number}}元
+          </p>
+        </div>
+        <div class="submenu">
+          <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
+            债权转让手续费是宏财网为您和受让人提供信息匹配和交易撮合所收取的费用，<br><br>
+            该笔债权持有时间 < 30天，手续费 = 转让本金 * 1%，<br>
+            持有时间 ≥ 30天，手续费 = 转让本金 * 0.5%，手续费最低收取3元。<br>
+            <span v-if="currentDate - creditCreateTime < rule.borderDay * 24 * 60 * 60 * 1000">{{transferAmount || 0}} * 1% = {{transferAmount / 100 | number}}元</span>
+            <span v-if="currentDate - creditCreateTime >= rule.borderDay * 24 * 60 * 60 * 1000">{{transferAmount || 0}} * 0.5% = {{transferAmount * 0.5 / 100 | number}}元</span>
+          </span>  
+        </div>
+      </div>
+      <div class="content">
+        <div class="column" @click="showOrHide($event)">
+          <div class="fl">预计回款</div>
+          <div class="fa-down txt-right fr">
+          </div>
+          <p class="fr">
+            {{transferAmount + profit - counterFee - transferReward - deduction ? transferAmount + profit - counterFee - transferReward - deduction : 0 | number}}元
+          </p>
+        </div>
+        <div class="submenu">
+          <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
+            预计回款金额：债权本金 + 本期待收利息 - 债权转让奖金 - 现金券奖励扣款 - 债权转让手续费<br><br>
+            {{transferAmount || 0}} + {{profit | number}} - {{transferReward | number}} - {{ deduction | number}} - {{counterFee || 0}} = {{transferAmount + profit - counterFee - transferReward - deduction | number}}元
+          </span>  
+        </div>
+      </div>
+    </div>
     <!-- 理解宏财 -->
     <div v-if="type === '1'">
       <div class="content">
@@ -141,7 +241,7 @@
       </div>
       <div class="content">
         <div class="column" @click="showOrHide($event)">
-          <div class="fl">6.债权转让的实际支付金额为什么大于认购金额？</div>
+          <div class="fl">6.债权转让实际支付金额为何大于认购金额？</div>
           <div class="fa-down txt-right fr">
           </div>
         </div>
@@ -291,7 +391,7 @@
         </div>
         <div class="submenu">
           <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
-            如果您在注册或登录过程中，点击“获取验证码”按钮后手机一直收不到验证码，建议等60秒，并查看是否被手机内安全软件拦截，或先重启下您的手机，排除手机自身原因后，再次获取验证码。如果依旧收不到验证码，您可以拨打宏财网客服电话：4009907626进行咨询。
+            如果您在注册或登录过程中，点击“获取验证码”按钮后手机一直收不到验证码，建议等60秒，并查看是否被手机内安全软件拦截，或先重启下您的手机，排除手机自身原因后，再次获取验证码。如果依旧收不到验证码，您可以拨打宏财网客服电话：400-990-7626进行咨询。
           </span>  
         </div>
       </div>
@@ -373,7 +473,7 @@
         <div class="submenu">
           <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
             宏财网目前支持的银行有：<br>
-            农业银行、中国银行、中信银行、招商银行、交通银行、光大银行、、兴业银行、广发银行、华夏银行、北京银行、工商银行、民生银行、建设银行、邮政银行、浦发银行、平安银行。
+            农业银行、中国银行、中信银行、招商银行、交通银行、光大银行、兴业银行、广发银行、华夏银行、北京银行、工商银行、民生银行、建设银行、邮政银行、浦发银行、平安银行。
           </span>  
         </div>
       </div>
@@ -465,14 +565,14 @@
       </div>
       <div class="content">
         <div class="column" @click="showOrHide($event)">
-          <div class="fl">3.提现有手续费吗？提现次数和金额有什么限制？</div>
+          <div class="fl">3.提现有手续费吗？提现次数和金额有何限制？</div>
           <div class="fa-down txt-right fr">
           </div>
         </div>
         <div class="submenu">
           <span class="padding-l-1 ft-grey7 display-inb padding-b-1p2">
             1）目前提现是有手续费的哦，由第三方支付机构按每笔2元收取；<br>
-            2）体现次数不限，单笔无上线，每人每天提现上线为1000W；
+            2）提现次数不限，单笔无上限，每人每天提现上限为1000W；
           </span>  
         </div>
       </div>
@@ -487,7 +587,7 @@
             以下原因导致提现失败：<br>
             1）银行卡所属银行的服务出现问题，若您提现的银行卡挂失，注销等状态异常，会造成提现失败。<br>
             2）第三方支付服务出现问题；<br>
-            如遇到以上情况，我们会在收到银行转账失败的通知后解除提现资金冻结状态，并在两个工作日内将资金回到您的账户余额，请不必担心资金安全，同时也可以拨打宏财网客服电话：400-9907626进行解决。
+            如遇到以上情况，我们会在收到银行转账失败的通知后解除提现资金冻结状态，并在两个工作日内将资金回到您的账户余额，请不必担心资金安全，同时也可以拨打宏财网客服电话：400-990-7626进行解决。
           </span>  
         </div>
       </div>
@@ -604,7 +704,7 @@
       </div>
       <div class="content">
         <div class="column" @click="showOrHide($event)">
-          <div class="fl">5.如何进入宏财网VIP群？进群后享受哪些特权？</div>
+          <div class="fl">5.如何进入宏财网VIP群？进群享受哪些特权？</div>
           <div class="fa-down txt-right fr">
           </div>
         </div>
@@ -626,7 +726,7 @@
     <div v-if="type === '8'">
       <div class="content">
         <div class="column">
-          <div class="fl">1.客服电话：400-9907626</div>
+          <div class="fl">1.客服电话：400-990-7626</div>
         </div>
       </div>
       <div class="content">
@@ -651,37 +751,85 @@
 </template>
 
 <script>
-  // import {Utils} from '../../service/Utils'
   var submenu = document.getElementsByClassName('submenu')
+  import {dateUtil} from '../../service/Utils'
   export default {
     name: 'help',
     data () {
       return {
         type: '1',
-        titles: ['了解宏财', '产品介绍', '投资相关', '注册登录', '账户管理', '充值提现', '用户福利', '客户服务'],
-        bankLimit: []
+        titles: ['了解宏财', '产品介绍', '投资相关', '注册登录', '账户管理', '充值提现', '用户福利', '客户服务', '预计回款'],
+        bankLimit: [],
+        number: '',
+        projectNum: '',
+        project: {},
+        rule: {},
+        orderAmount: 0,
+        transferAmount: 0,
+        profit: 0,
+        currentDate: 0,
+        profitDate: 0,
+        transferReward: 0,
+        remainDay: 0,
+        transferAnnul: 0,
+        deduction: 0,
+        creditAmount: 0,
+        counterFee: 0,
+        couponVal: 0,
+        creditCreateTime: 0
+      }
+    },
+    props: ['token'],
+    watch: {
+      token: function (val) {
+        if (val && val !== '') {
+          this.getAssignmentRule()
+        }
       }
     },
     created: function () {
       this.type = this.$route.params.type.toString()
+      this.number = this.$route.query.number
+      this.transferAmount = Number(this.$route.query.amount)
+      this.transferAnnul = Number(this.$route.query.annualEarnings)
+      this.currentDate = new Date().getTime()
       document.title = this.titles[Number(this.type - 1)]
-      this.getBankLimit()
+      if (this.type === '6') {
+        this.getBankLimit()
+      }
+      if (this.type === '9') {
+        if (this.token && this.token !== '') {
+          this.getAssignmentRule()
+        }
+      }
     },
     methods: {
       showContent: function (e, content, submenu) {
         for (var i = 0; i < submenu.length; i++) {
           submenu[i].style.display = 'none'
           submenu[i].parentElement.classList.remove('open')
-          submenu[i].previousElementSibling.lastChild.classList.remove('rotate')
+          if (this.type === '9') {
+            submenu[i].previousElementSibling.lastChild.previousElementSibling.classList.remove('rotate')
+          } else {
+            submenu[i].previousElementSibling.lastChild.classList.remove('rotate')
+          }
         }
         content.parentElement.lastChild.style.display = 'block'
         content.parentElement.className += ' open'
-        content.lastChild.className += ' rotate'
+        if (this.type === '9') {
+          content.lastChild.previousElementSibling.className += ' rotate'
+        } else {
+          content.lastChild.className += ' rotate'
+        }
       },
       hideContent: function (e, content, submenu) {
         content.parentElement.lastChild.style.display = 'none'
         content.parentElement.classList.remove('open')
-        content.lastChild.classList.remove('rotate')
+        if (this.type === '9') {
+          content.lastChild.previousElementSibling.classList.remove('rotate')
+        } else {
+          content.lastChild.classList.remove('rotate')
+        }
       },
       showOrHide: function (e) {
         var content = e.target
@@ -700,10 +848,46 @@
       getBankLimit: function () {
         var that = this
         that.$http({
-          url: '/hongcai/api/v1/bank/getBankRechargeLimit'
+          url: '/hongcai/rest/bankcard/rechargeBankLimits'
         })
         .then(function (res) {
-          that.bankLimit = res.data.data.bankLimit
+          that.bankLimit = res.data
+        })
+      },
+      getAssignmentRule: function () {
+        this.$http({
+          url: '/hongcai/rest/assignments/assignmentRule' + '?token=' + this.token
+        }).then((res) => {
+          this.rule = res.data
+          this.getCreditDetail()
+        })
+      },
+      getCreditDetail: function () {
+        this.$http({
+          method: 'get',
+          url: '/hongcai/rest/creditRights/' + this.number + '/creditDetail' + '?token=' + this.token
+        }).then((response) => {
+          this.project = response.data.project
+          this.creditAmount = response.data.creditRight.amount
+          this.creditCreateTime = response.data.creditRight.createTime
+          // 待收利息天数
+          this.profitDate = dateUtil.intervalDays(this.currentDate, response.data.projectBill.lastRepaymentTime) * (this.currentDate > response.data.projectBill.lastRepaymentTime ? 1 : -1)
+          // 剩余期限
+          this.remainDay = dateUtil.intervalDays(this.project.repaymentDate, this.currentDate)
+          // 待收未收利息
+          this.profit = this.transferAmount * this.project.annualEarnings * this.profitDate / 36500
+          // 转让奖金
+          this.transferReward = this.transferAmount * (this.transferAnnul - this.project.annualEarnings) * this.remainDay / 36500
+          // 现金券金额
+          this.couponVal = response.data.increaseRateCoupon && response.data.increaseRateCoupon.type === 2 ? response.data.increaseRateCoupon.value : 0
+          // 现金券奖励扣款
+          this.deduction = this.couponVal * (this.transferAmount / this.creditAmount)
+          // 手续费
+          if (dateUtil.intervalDays(this.currentDate, this.creditCreateTime) < this.rule.borderDay) {
+            this.counterFee = this.transferAmount * this.rule.lessThanOrEqualBorderDayFee / 100 * this.rule.discountFeeRate > this.rule.minFee ? this.transferAmount * this.rule.lessThanOrEqualBorderDayFee / 100 * this.rule.discountFeeRate : this.rule.minFee
+          } else {
+            this.counterFee = this.transferAmount * this.rule.greaterThanBorderDayFee / 100 * this.rule.discountFeeRate > this.rule.minFee ? this.transferAmount * this.rule.greaterThanBorderDayFee / 100 * this.rule.discountFeeRate : this.rule.minFee
+          }
         })
       }
     }
@@ -711,6 +895,11 @@
 </script>
 
 <style scoped>
+  p.fr {
+    margin-right: .05rem;
+    font-size: .28rem;
+    color: #f66000;
+  }
   .help .content {
     overflow: hidden;
     padding: 0 .36rem;
@@ -726,15 +915,20 @@
   }
   .help .content .column {
     border-bottom: 1px solid #eee;
-    padding: .2rem 0rem;
+    /* padding: .2rem 0rem; */
+    height: 1rem;
+    line-height: 1rem;
     background-color: #fff;
     margin-left: 0;
     width: 100%;
     float: left;
     color: #666;
   }
+  .help .content .column div.fl {
+    font-size: .26rem;
+  }
   .column .rotate {
-    transform: rotateZ(180deg);
+    transform: rotateZ(0deg);
   }
   .submenu {
     display: none;
@@ -764,14 +958,19 @@
   .border-none {
     border-bottom: none !important;
   }
-  .fa-down {
-    background: url('../../images/user-center/angle-down.png') no-repeat center 5px;
+  .fa-down, .fa-down-no {
+    background: url('../../images/user-center/angle-down.png') no-repeat center .4rem;
     background-size: contain;
     display: block;
     width: .2rem;
-    height: .3rem;
+    height: 1rem;
+    padding-top: .25rem;
+    transform: rotateZ(-90deg);
     -webkit-transition: all .2s ease-in;
     -moz-transition: all .2s ease-in;
     transition: all .2s ease-in;
+  }
+  .fa-down-no {
+    background: rgba(0,0,0,0);
   }
 </style> 

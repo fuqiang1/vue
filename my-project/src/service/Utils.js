@@ -63,7 +63,7 @@ let InviteShareUtils = {
     return subTitle
   },
   shareLink: function (inviteCode) {
-    var shareLink = 'http://m.hongcai.com' + '/activity/invite-sharing'
+    var shareLink = process.env.domain + '/activity/invite-sharing'
     if (inviteCode) {
       shareLink = shareLink + '/' + inviteCode
     }
@@ -73,12 +73,6 @@ let InviteShareUtils = {
   shareImageUrl: function () {
     var imageUrl = 'https://mmbiz.qlogo.cn/mmbiz_jpg/8MZDOEkib8Akr3KNzVxtZ95xUPndUzXu3CvoSK2iap7RdeDEU69hTG8tSSL0no6uV9T75FqVsJXj54hVicu40KMicw/0?wx_fmt=jpeg'
     return imageUrl
-  }
-}
-let ruleBox = {
-  showRuleBox: function (el, vue, showRules) {
-    vue.showRules = !vue.showRules
-    vue.showRules ? el.className = 'position-fix' : el.className = ' '
   }
 }
 let bridgeUtil = {
@@ -241,6 +235,17 @@ let InputMaskHelper = (function (eleCls) {
     }
   }
 })('input-focus')
+/**
+ * TODO 输入框粘贴限制 & 输入类型
+ */
+let checkInputUtil = {
+  beforepasteHandler: function (e, reg) {
+    e.clipboardData.setData('text', e.clipboardData.getData('text').replace(reg, ''))
+  },
+  oninputHandler: function (item, reg) {
+    item = item.replace(reg, '')
+  }
+}
 export {Utils}
 export {InviteShareUtils}
 export {bridgeUtil}
@@ -248,4 +253,4 @@ export {ModalHelper}
 export {dateUtil}
 export {sendMobCaptcha}
 export {InputMaskHelper}
-export {ruleBox}
+export {checkInputUtil}

@@ -1,12 +1,12 @@
 <template>
-  <div class="project" id="project" v-auto-height>
+  <div class="project" id="project" v-auto-height v-load>
     <div class="fist-frame product-page1 animate" id="product-page1">
       <div class="project-detail-top bg-white">
-        <p class="ft-Arial"><span>{{project.annualEarnings}}</span>%</p>
+        <p class="ft-Arial"><span>{{project.annualEarnings || 0}}</span>%</p>
         <p class="second">期望年均回报率</p>
         <div class="tip-list">
           <span class="tip-item tip-item1"><span class="font-Arial margin-0">100</span>元起投</span>
-          <span class="tip-item tip-item2"><span class="font-Arial margin-0">{{project.projectDays}}</span>天项目期</span>
+          <span class="tip-item tip-item2"><span class="font-Arial margin-0">{{project.projectDays || 0}}</span>天项目期</span>
         </div>
         <div class="project-process clearfix">
           <div class="start-circle fl">
@@ -14,8 +14,8 @@
           </div>
           <div class="process-bar fl">
             <div class="process-inner-bar fl" v-bind:style="{width:processWith + '%'}"></div>
-            <img src="../images/project/process-btn.png" class="fl" v-bind:style="{left:processWith - 5 + '%'}">
-            <div class="process-tip" v-bind:style="{left:processWith - 2 + '%'}">{{processWith}}%</div>
+            <img src="../images/project/process-btn.png" class="fl" v-bind:style="{left:processWith - 4.5 + '%'}">
+            <div class="process-tip" v-bind:style="{left:processWith - 3 + '%'}">{{processWith}}%</div>
           </div>
           <div class="end-circle fr" v-show="processWith < 100">
             <div class="end-circle-center"></div>
@@ -32,7 +32,7 @@
           <span>还款方式：</span>按月付息，到期还本
         </div>
         <div class="detail-item">
-          <span>募集提示：</span>该项目将于募集结束后，进入锁定期
+          <span>到期日期：</span>{{project.status === 10 ? '' : '预计'}}{{project.repaymentDate | date}}
         </div>
         <div class="detail-item" v-if="project.status === 7">
           <span>项目状态：</span>融资中
@@ -68,10 +68,10 @@
           </div>
         </div>
       </div>
-      <div class="child">下滑返回详情首页</div>
+      <div class="child">向下滑动, 查看项目</div>
       <div class="scroll">
         <div class="details-more">
-          <div class="project-details" v-show="activeTab === 0">
+          <div class="project-details" v-if="activeTab === 0">
             <div class="project-brief">
               <div class="title">
                 <span></span>
@@ -112,24 +112,24 @@
               </div>
             </div>
           </div>
-          <div v-show="activeTab === 1" class="business-license project-details bg-white">
+          <div v-if="activeTab === 1" class="business-license project-details bg-white">
             <div class="project-brief">
               <div class="content">
-                <ul class="license-list">
-                  <li class="license-item" v-show="categoryCode !== '0115'" v-for="(contract, index) in contractThumbnailFileList" @click="preview(index, $event, contractOriginalFileList)">
+                <ul class="license-list clearfix">
+                  <li class="license-item" v-if="categoryCode !== '0115'" v-for="(contract, index) in contractThumbnailFileList" @click="preview(index, $event, contractOriginalFileList)">
                     <img v-bind:src="baseFileUrl + contract.uploadFile.url" width="100%" height="100%">
                   </li>
-                  <li class="license-item" v-show="categoryCode !=='0112' && categoryCode !== '0115' && categoryCode !== '0116'" @click="preview(index, $event, enterpriseOriginalFileList)" v-for="(enterPrise, index) in enterpriseThumbnailFileList">
+                  <li class="license-item" v-if="categoryCode !=='0112' && categoryCode !== '0115' && categoryCode !== '0116'" @click="preview(index, $event, enterpriseOriginalFileList)" v-for="(enterPrise, index) in enterpriseThumbnailFileList">
                     <img v-bind:src="baseFileUrl + enterPrise.uploadFile.url" width="100%" height="100%">
                   </li>
-                  <li class="license-item" v-show="projectThumbnailFileList.length > 0" @click="preview(index, $event, projectOriginalFileList)" v-for="(project, index) in projectThumbnailFileList">
+                  <li class="license-item" v-if="projectThumbnailFileList.length > 0" @click="preview(index, $event, projectOriginalFileList)" v-for="(project, index) in projectThumbnailFileList">
                     <img v-bind:src="baseFileUrl + project.uploadFile.url" width="100%" height="100%">
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="orders" v-show="activeTab == 2">
+          <div class="orders" v-if="activeTab == 2">
             <div class="investor-record">
               <table>
                 <thead>
@@ -140,12 +140,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="order in orderList" :key="order.id" v-show="orderList && orderList.length >0 ">
+                  <tr v-for="order in orderList" :key="order.id" v-show="showOrderList">
                     <td>{{order.createTime | date}}</td>
                     <td>{{order.userName}}</td>
                     <td>{{order.orderAmount}}</td>
                   </tr>
-                  <tr class="text-center" v-show="orderList && orderList.length <=0 ">
+                  <tr class="text-center" v-show="!showOrderList">
                     <td colspan="3">
                       <img src="../images/project/no-record.png" width="35%" class="no-record">
                       <p class="ft-grey4 margin-b-0 margin-t-1p5">暂无记录</p>
@@ -158,47 +158,50 @@
               </div>
             </div>
           </div>
-          <div v-show="activeTab === 3" class="repayment-plan bg-white">
-            <div class="each-line" v-for="preRepayment in preRepaymentList">
-              <div class="column1"><span v-show="preRepayment.status !== 1">预计</span>{{preRepayment.repaymentTime | date}}</div>
+          <div v-if="activeTab === 3" class="repayment-plan bg-white">
+            <div class="each-line" v-for="(preRepayment, index) in preRepaymentList">
+              <div class="column1"><span :class="{'ed': preRepayment.status === 1}">预计</span>{{preRepayment.repaymentTime | date}}</div>
               <div class="column2">
-                <span class="circle"></span>
-                <span class="vertical-line"></span>
+                <span class="circle" :class="{'ed': preRepayment && preRepayment.status === 1 }"></span>
+                <span class="vertical-line" :class="{'ed': preRepayment && preRepayment.nextStatus === 1}"></span>
               </div>
-              <div class="column3">
-                项目回款:利息{{preRepayment.repaymentInterest | number}}元
+              <div class="column3" :class="{'ed': preRepayment && preRepayment.status === 1 }">
+                回款利息：{{preRepayment.repaymentInterest | number}}元
               </div>
             </div>
             <div class="each-line">
-              <div class="column1"><span v-show="final.status !== 1">预计</span>{{final.repaymentTime | date}}</div>
-              <div class="column2">
+              <div class="column1"><span :class="{'ed': final.status === 1}">预计</span>{{final.repaymentTime | date}}</div>
+              <div class="column2" :class="{'ed': final && final.status === 1 }">
                 <span class="circle"></span>
                 <span class="vertical-line last-line"></span>
               </div>
-              <div class="column3">
-                项目回款:本金{{final.repaymentPrincipal | number}}元
+              <div class="column3" :class="{'ed': final && final.status === 1 }">
+                回款本金：{{final.repaymentPrincipal | number}}元
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <p class="invest-fixed-btn" :class="{'disable-btn': project.status !== 7 }" v-if="project.status === 7" @click="toInvest()">立即投资</p>
-    <p class="invest-fixed-btn disable-btn" v-if="project.status === 6">预发布</p>
-    <p class="invest-fixed-btn disable-btn" v-if="project.status === 8">融资成功</p>
-    <p class="invest-fixed-btn disable-btn" v-if="project.status === 9">还款中</p>
-    <p class="invest-fixed-btn disable-btn" v-if="project.status === 10">还款完成</p>
-    <p class="invest-fixed-btn disable-btn" v-if="project.status === 11">预约中</p>
+    <button class="invest-fixed-btn" :class="{'disable-btn': project.status !== 7 }" v-if="project.status === 7" @click="toInvest()" :disabled="busy">立即投资</button>
+    <button class="invest-fixed-btn disable-btn" v-if="project.status === 6">预发布</button>
+    <button class="invest-fixed-btn disable-btn" v-if="project.status === 8">融资成功</button>
+    <button class="invest-fixed-btn disable-btn" v-if="project.status === 9">还款中</button>
+    <button class="invest-fixed-btn disable-btn" v-if="project.status === 10">还款完成</button>
+    <button class="invest-fixed-btn disable-btn" v-if="project.status === 11">预约中</button>
   </div>
 </template>
 <script>
-  import {Utils, bridgeUtil} from '../service/Utils'
+  import {bridgeUtil} from '../service/Utils'
   import $ from 'zepto'
   export default {
     name: 'projectDetail',
     data () {
       return {
-        project: {},
+        busy: false,
+        project: {
+          amount: 0
+        },
         projectInfo: {
           description: '',
           financingPurpose: '',
@@ -207,6 +210,7 @@
           riskControl: ''
         },
         orderList: [],
+        showOrderList: false,
         paramsNum: 0,
         projectId: 0,
         expectEarning: 0,
@@ -216,8 +220,6 @@
         pageSize: 10,
         page: 1,
         totalPage: 1,
-        isIos: Utils.isIos(),
-        isAndroid: Utils.isAndroid(),
         categoryCode: '0115',
         final: {},
         preRepaymentList: {},
@@ -227,7 +229,18 @@
         enterpriseThumbnailFileList: [],
         projectOriginalFileList: [],
         projectThumbnailFileList: [],
-        baseFileUrl: 'http://test321.hongcai.com/uploads/'
+        baseFileUrl: process.env.baseFileUrl
+      }
+    },
+    watch: {
+      orderList: function (value) {
+        value.length > 0 ? this.showOrderList = true : this.showOrderList = false
+      },
+      activeTab: function (oldVal, newVal) {
+        // 每次tab切换页面回到初始位置
+        if (oldVal !== newVal) {
+          $('.scroll').scrollTop(0)
+        }
       }
     },
     created: function () {
@@ -236,28 +249,35 @@
       this.getProjectRisk()
       this.getFiles()
       this.getProjectBill()
-      bridgeUtil.setupWebViewJavascriptBridge()
+      this.getOrderList(this.page, this.pageSize)
       window.vue = this
-      window.onload = function (e) {
-        var page1 = document.querySelector('.product-page1')
-        var page2 = document.querySelector('.product-page2')
-        var pagedetail = document.querySelector('.details-more')
-        if (page1) {
-          page1.addEventListener('load', window.vue.scrollDetail(page1), false)
+    },
+    directives: {
+      'load': {
+        inserted: function (el) {
+          var page1 = document.querySelector('.product-page1')
+          var page2 = document.querySelector('.product-page2')
+          var pagedetail = document.querySelector('.details-more')
+          if (page1) {
+            page1.addEventListener('load', window.vue.scrollDetail(page1), false)
+          }
+          if (page2 && pagedetail) {
+            page2.addEventListener('load', window.vue.scrollBack(pagedetail), false)
+          }
+          document.querySelector('.scroll').style.height = window.innerHeight - 2 * document.querySelector('#detail-tabs').offsetHeight - 20 + 'px'
+          document.querySelector('.project').addEventListener('touchmove', function (event) {
+            event.stopPropagation()
+            // event.preventDefault()
+          }, false)
         }
-        if (page2 && pagedetail) {
-          page2.addEventListener('load', window.vue.scrollBack(pagedetail), false)
-        }
-        document.querySelector('.scroll').style.height = window.innerHeight - 2 * document.querySelector('#detail-tabs').offsetHeight - 20 + 'px'
       }
     },
     methods: {
       toggleTab: function (i) {
         this.activeTab = i
-        document.querySelector('.details-more').style.webkitTransform = 'translateY(' + 0 + 'px)'
-        this.orderList = []
+        $('.scroll').css('transform', 'translateY(0px)')
+        document.querySelector('.scroll').style.webkitTransform = 'translateY(0px)'
         this.page = 1
-        i === 2 ? this.getOrderList(this.page, this.pageSize) : ''
       },
       getProject: function () {
         this.$http({
@@ -267,7 +287,7 @@
           this.project = response.data
           document.title = this.project.name
           var proWidth = (this.project.total - this.project.amount) / this.project.total * 100
-          this.processWith = parseInt(proWidth) === proWidth ? proWidth : proWidth.toFixed(1)
+          this.processWith = parseInt(proWidth) === proWidth ? proWidth : proWidth.toFixed(2)
           this.expectEarning = (10000 * this.project.annualEarnings * this.project.projectDays / 36500).toFixed(2)
           this.projectId = response.data.id
           this.getProjectInfo()
@@ -328,6 +348,15 @@
         }).then(function (res) {
           that.preRepaymentList = res.data
           that.final = that.preRepaymentList[that.preRepaymentList.length - 1]
+          if (that.preRepaymentList.length === 1) {
+            that.preRepaymentList[0].nextStatus = that.preRepaymentList[0].status
+          }
+          for (var i = 1; i < that.preRepaymentList.length; i++) {
+            that.preRepaymentList[i - 1].nextStatus = that.preRepaymentList[i].status
+            if (i === that.preRepaymentList.length - 1) {
+              that.preRepaymentList[that.preRepaymentList.length - 1].nextStatus = that.preRepaymentList[i].status
+            }
+          }
         })
         .catch(function (err) {
           console.log(err)
@@ -342,46 +371,26 @@
       },
       toInvest: function () {
         var that = this
-        var callHandlerCallback = function (response) {}
+        that.busy = true
+        setTimeout(function () {
+          that.busy = false
+        }, 2000)
         var nativeNeedDatas = {
           'amount': that.project.amount,
           'annualEarnings': that.project.annualEarnings,
           'projectDays': that.project.projectDays,
           'projectId': that.project.id,
-          'number': this.paramsNum
+          'number': that.paramsNum,
+          'type': that.project.type
         }
-        bridgeUtil.webConnectNative('HCNative_ImmediateInvestment', 'HCWeb_LoginSuccess', nativeNeedDatas, callHandlerCallback, null)
+        bridgeUtil.webConnectNative('HCNative_ImmediateInvestment', 'HCWeb_LoginSuccess', nativeNeedDatas, null, null)
       },
       preview: function (i, e, tar) {
         var that = this
         bridgeUtil.webConnectNative('HCNative_ImgSrc', null, {'imgSrc': that.baseFileUrl + tar[i].uploadFile.url}, function (response) {}, function (data) {})
       },
-      CaptureTouch: function (t) {
-        function e (e) {
-          var n
-          var s = e.targetTouches[0]
-          if (s.pageX || s.pageY) {
-            n = s.pageY
-          } else {
-            n = s.clientY + document.body.scrollTop + document.documentElement.scrollTop
-          }
-          n -= t.offsetTop
-          a.y = n
-        }
-        var a = {
-          y: null
-        }
-        return [t.addEventListener('touchstart', function (t) {
-          e(t)
-        }, !1),
-          t.addEventListener('touchend', function (t) {
-            a.y = null
-          }, !1),
-          t.addEventListener('touchmove', e, !1), a]
-      },
       scrollDetail: function (page) {
         var Height = window.innerHeight
-        window.touch = this.CaptureTouch(page)
         window.offsetY = 0
         window.touchStartY = 0
         window.speed = 0
@@ -389,21 +398,36 @@
         page.addEventListener('touchstart', startTouchScroll, false)
         page.addEventListener('touchmove', moveTouchScroll, false)
         page.addEventListener('touchend', endTouchScroll, false)
+        document.querySelector('.project').addEventListener('touchmove', function (event) {
+          event.stopPropagation()
+          // event.preventDefault()
+        }, false)
+        var startPos = {}
+        var endPos = {}
         function startTouchScroll (event) {
           // event.preventDefault()
-          window.touchStartY = window.touch[3].y
+          var touch = event.targetTouches[0]
+          startPos = {x: touch.pageX, y: touch.pageY}
+          window.touchStartY = event.targetTouches[0].pageY
           window.offsetY = 0
           touchY = window.offsetY
-          // document.querySelector('#product-page1').classList = 'fist-frame product-page1 animate'
           $('#product-page1').addClass('animate')
         }
         function moveTouchScroll (event) {
+          var touch = event.targetTouches[0]
+          endPos = {x: touch.pageX - startPos.x, y: touch.pageY - startPos.y}
+          // isScrolling为1时，表示纵向滑动，0为横向滑动
+          var isScrolling = Math.abs(endPos.x) < Math.abs(endPos.y) ? 1 : 0
+          if (isScrolling === 1) {
+            event.preventDefault()
+          }
           // event.preventDefault()
-          window.offsetY += 0.25 * (window.touch[3].y - window.touchStartY)
-          window.touchStartY = window.touch[3].y
+          window.offsetY += 0.25 * (event.targetTouches[0].pageY - window.touchStartY)
+          window.touchStartY = event.targetTouches[0].pageY
           touchY = window.offsetY
-          if (window.offsetY <= 0 && window.offsetY < -1) {
-            page.style.webkitTransform = 'translate3d(0, ' + window.offsetY + 'px, 0)'
+          if (window.offsetY < -1) {
+            $('.product-page1').css('transform', 'translateY(' + window.offsetY + 'px)')
+            page.style.webkitTransform = 'translateY(' + window.offsetY + 'px)'
           }
         }
         function endTouchScroll (event) {
@@ -411,58 +435,88 @@
           window.speed = -(document.body.clientHeight - Math.abs(window.offsetY)) / 10
           window.offsetY += window.speed
           if (touchY < -1) {
+            $('.product-page1').css('transform', 'translate3d(0, -' + Height + 'px, 0)')
             page.style.webkitTransform = 'translate3d(0, -' + Height + 'px, 0)'
             var page2 = document.querySelector('.product-page2')
+            $('.product-page2').css('transform', 'translate3d(0, -' + Height + 'px, 0)')
             page2.style.webkitTransform = 'translate3d(0, -' + Height + 'px, 0)'
-            document.querySelector('.details-more').style.webkitTransform = 'translateY(' + 0 + 'px)'
+            $('.details-more').css('transform', 'translateY(0px)')
+            document.querySelector('.details-more').style.webkitTransform = 'translateY(0px)'
+            window.vue.activeTab = 0
           }
         }
       },
-      scrollBack: function scrollBack (page) {
+      scrollBack: function (page) {
         window.vue = this
         var scrollDirection = 0
         var offsetY = 0
         var touchStartY = 0
-        var scrollTop = 0
+        var lastY
+        var sub
+        var startPos = {}
+        var endPos = {}
         page.addEventListener('touchstart', startTouchScroll, true)
         page.addEventListener('touchmove', moveTouchScroll, true)
         page.addEventListener('touchend', endTouchScroll, true)
+        document.querySelector('.product-page2').addEventListener('touchstart', function (event) {
+          lastY = event.changedTouches[0].clientY
+          var touch = event.targetTouches[0]
+          startPos = {x: touch.pageX, y: touch.pageY}
+        }, false)
+        document.querySelector('.product-page2').addEventListener('touchmove', function (event) {
+          event.stopPropagation()
+          var touch = event.targetTouches[0]
+          endPos = {x: touch.pageX - startPos.x, y: touch.pageY - startPos.y}
+          var isScrolling = Math.abs(endPos.x) < Math.abs(endPos.y) ? 1 : 0
+          var y = event.changedTouches[0].clientY
+          var st = $(this).scrollTop()
+          sub = $('.scroll').offset().top - $('.details-more').offset().top
+          // isScrolling为1时，表示纵向滑动，0为横向滑动
+          if (sub === 0 && y >= lastY && st <= 10 && isScrolling === 1) {
+            lastY = y
+            event.preventDefault()
+          }
+        }, false)
         function startTouchScroll (event) {
-          // event.preventDefault()
-          // document.querySelector('.scroll').classList.remove('animate')
           $('.scroll').removeClass('animate')
           touchStartY = event.targetTouches[0].pageY
           offsetY = 0
-          scrollTop = $('.scroll').offset().top
+          // scrollTop = $('.scroll').offset().top
         }
         function moveTouchScroll (event) {
-          // event.preventDefault()
+          // event.stopPropagation()
           offsetY += 0.25 * (event.targetTouches[0].pageY - touchStartY)
           touchStartY = event.targetTouches[0].pageY
           scrollDirection = offsetY
+          if (scrollDirection < 0) {
+            $('.scroll').css('transform', 'translateY(0px)')
+            document.querySelector('.scroll').style.webkitTransform = 'translateY(0px)'
+          }
           if (scrollDirection > 15 && $('.details-more').offset().top - screenTop >= 15) {
-            // document.querySelector('.scroll').classList = 'scroll animate'
+            $('.scroll').css('transform', 'translateY(' + scrollDirection + 'px)')
             document.querySelector('.scroll').style.webkitTransform = 'translateY(' + scrollDirection + 'px)'
-          } else if (scrollTop === $('.details-more').offset().top) {
-            // document.querySelector('.scroll').classList = 'scroll animate'
+          }
+          if (scrollDirection >= 50) {
+            scrollDirection = 50
+            $('.scroll').css('transform', 'translateY(' + scrollDirection + 'px)')
+            document.querySelector('.scroll').style.webkitTransform = 'translateY(' + scrollDirection + 'px)'
           }
         }
         function endTouchScroll (event) {
-          // event.preventDefault()($('.scroll').offset().top)
-          var sub = $('.scroll').offset().top - $('.details-more').offset().top
-          if (scrollDirection === 0 && event.target.className === 'drop-load') {
-            // window.vue.loadMoreOrder()
-            return false
-          } else if (sub === 0 && scrollDirection >= 35) {
-            // document.querySelector('.scroll').classList = 'scroll animate'
+          sub = $('.scroll').offset().top - $('.details-more').offset().top
+          if ((sub === 0 && scrollDirection >= 20) || $('.scroll').offset().top > 80) {
             $('.scroll').addClass('animate')
             setTimeout(function () {
+              $('.scroll').css('transform', 'translateY(0px)')
               document.querySelector('.scroll').style.webkitTransform = 'translateY(0px)'
-              document.querySelector('.product-page1').style.webkitTransform = 'translate3d(0, 0px, 0)'
-              document.querySelector('.product-page2').style.webkitTransform = 'translate3d(0, 0px, 0)'
+              $('.product-page1').css('transform', 'translateY(0px)')
+              document.querySelector('.product-page1').style.webkitTransform = 'translateY(0px)'
+              $('.product-page2').css('transform', 'translateY(0px)')
+              document.querySelector('.product-page2').style.webkitTransform = 'translateY(0px)'
             }, 300)
             scrollDirection = 0
-          } else if (sub === 0 && scrollDirection < 35) {
+          } else if (sub === 0 && scrollDirection < 20) {
+            $('.scroll').css('transform', 'translateY(0px)')
             document.querySelector('.scroll').style.webkitTransform = 'translateY(0px)'
           } else if (sub === 0) {
             offsetY = 0
@@ -473,13 +527,12 @@
       }
     }
   }
-  document.querySelector('.details-more') ? console.log(document.querySelector('.details-more').scrollHeight) : ''
 </script>
 
 <style scoped>
   .child {
     position: absolute;
-    top: 1.5rem;
+    top: 1.3rem;
     left: 35%;
     font-size: .2rem;
     background-color: #efeef4;
@@ -488,6 +541,7 @@
   .scroll {
     overflow: scroll;
     background: #fff;
+    -webkit-overflow-scrolling: touch;
     /*height: 8.5rem;*/
   }
   #product-page1.animate, .product-page2.animate, .scroll.animate {
@@ -590,6 +644,7 @@
    .invest-fixed-btn, .investBtn {
     width: 100%;
     height: .9rem;
+    border: none;
     line-height: .9rem;
     color: #fff;
     font-size: .28rem;
@@ -601,6 +656,7 @@
     z-index: 99;
   }
   .invest-fixed-btn.disable-btn {
+    border: none;
     background-color: #999;
   }
   #project {
@@ -612,7 +668,7 @@
      font-size: .2rem;
      /*background-color: #efeef4;*/
      color: #999;
-     padding: .25rem 0;
+     padding: .35rem 0;
   }
   .project-detail-top {
     padding-top: 0.8rem;
@@ -671,6 +727,30 @@
     padding: 0 .38rem;
     margin-top: .6rem;
     margin-bottom: .3rem;
+    z-index: 1;
+  }
+  @media(max-height: 480px) {
+    .project-detail-top {
+      padding: 0.1rem 0 0.2rem;
+      margin-bottom: .2rem;
+    }
+    .project-detail-top span {
+      font-size: .8rem;
+    }
+    .project-detail-top p.ft-Arial {
+      font-size: 0.4rem;
+      margin-bottom: .1rem;
+    }
+    .project-process {
+      margin-top: .5rem;
+    }
+    .project-detail-top p.second {
+      margin-bottom: .1rem;
+    }
+    .project-detail-bottom .detail-item {
+      height: .65rem !important;
+      line-height: .65rem !important;
+    }
   }
   .project-process .start-circle, .project-process .end-circle {
     width: .15rem;
@@ -685,6 +765,7 @@
   }
   .project-process .end-circle {
     border: 1px solid #75c4f6;
+    z-index: 3;
   }
   .project-process .start-circle .start-circle-center, .project-process .end-circle .end-circle-center {
     width: 0.08rem;
@@ -711,16 +792,15 @@
     height: 2px;
     top: 0;
     left: 0;
-    z-index: 99;
   }
   .process-bar img {
     position: absolute;
-    /*left: 75%;*/
+    z-index: 2;
     top: -0.18rem;
     width: 8%;
   }
   .process-bar .process-tip {
-    width: .55rem;
+    padding: 0 .01rem;
     height: .35rem;
     background: url('../images/project/process-tip.png') no-repeat 0 0;
     background-size: 100% 100%;
@@ -729,7 +809,7 @@
     text-align: center;
     line-height: .35rem;
     position: absolute;
-    /*left: 79%;*/
+    min-width: 0.4rem;
     top: -0.5rem;
   }
   .remain-amount, .actual-amount {
@@ -761,9 +841,6 @@
   }
   .project-detail-bottom span {
     color: #999;
-  }
-  .investor-record p {
-    /*line-height: 1.8rem;*/
   }
   .investor-record table {
     width: 100%;
@@ -805,35 +882,17 @@
     width: 100%;
   }
   .content .license-list .license-item {
-    width: 2.6rem;
+    width: 2.55rem;
     height: 2.6rem;
-    display: inline-block;
+    float: left;
     border: 1px solid #fdb62b;
     margin-bottom: .3rem;
   }
-  .license-item:nth-child(even) {
+  .content .license-list .license-item img {
+    display: block;
+  }
+  .content .license-list .license-item:nth-child(even) {
     float: right;
-  }
-  .overlay{
-    position: fixed;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:999;
-    background: rgba(0, 0, 0, 1);
-    width:100%;
-    height:100%;
-    display:none;
-  }
-  .overlay img{
-    position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    margin:auto;
-    z-index:9999;
   }
   /*还款计划*/
   .repayment-plan {
@@ -850,15 +909,18 @@
   }
   .repayment-plan .each-line .column1{
     width: 32%;
-    font-size: .24rem;
+    font-size: .22rem;
     color: #999;
-    text-align: left;
+    text-align: center;
     margin-top: -.4rem;
     vertical-align: text-top;
     height: 100%;
   }
+  .column1 span.ed {
+    opacity: 0;
+  }
   .repayment-plan .each-line .column2{
-    width: 5%;
+    width: 6%;
     position: relative;
     padding-left: .15rem;
   }
@@ -874,6 +936,14 @@
     position: absolute;
     bottom: -.8rem;
    }
+  .column2.ed .circle {
+    background-color: #ddd;
+    box-shadow: 0 2px 16px #ddd, 0 0 2px #ddd, 0 0 2px #ddd;
+   }
+  .column2 .ed.circle {
+    background-color: #ddd;
+    box-shadow: 0 2px 16px #ddd, 0 0 2px #ddd, 0 0 2px #ddd;
+   }
   .column2 .vertical-line {
     height: .98rem;
     width: 1px;
@@ -883,18 +953,26 @@
     margin-top: .07rem;
     margin-bottom: -0.6rem;
   }
+  .column2.ed .vertical-line {
+    background-color: #ddd;
+  }
+  .column2 .ed.vertical-line {
+    background-color: #ddd;
+  }
   .column2 .vertical-line.last-line {
     opacity: 0;
   }
   .column3 {
     padding-left: .2rem;
-    width: 59.5%;
+    width: 56%;
     color: #666;
-    font-size: .25rem;
     text-align: left;
     height: 100%;
     vertical-align: top;
     margin-top: -.1rem;
+  }
+  .column3.ed {
+    color: #999;
   }
   .no-record {
     margin-top: 1rem;

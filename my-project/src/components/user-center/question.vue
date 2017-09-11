@@ -25,6 +25,7 @@
     <div class="mask-common" v-show="showResult">
       <div class="wrap">
         <div class="wrap-conyent">
+          <p class="title">测评结果</p>
           <div class="rule">
             <p class="margin-t-0 margin-b-0 text-justify">尊敬的用户，您的风险承受能力 <span class="ft-bold">{{ability}}</span>，投资偏好为 <span class="ft-bold">{{type}}</span>，建议您选择宏财精选和宏财尊贵项目。</p>
             <button class="question-btn padding-0" @click="closeResult">我知道了</button>
@@ -36,7 +37,7 @@
 </template>
 
 <script>
-  import {Utils} from '../../service/Utils'
+  import {bridgeUtil} from '../../service/Utils.js'
   export default {
     name: 'Questionnaire',
     data () {
@@ -140,21 +141,23 @@
             ]
           }
         ],
-        questionAndAnswer: {
-
-        },
+        questionAndAnswer: {},
         canSubmit: false,
         showWarning: false,
         showResult: false,
         warningMsg: '',
         ability: '',
-        type: '',
-        token: 'e745776d47dcd5d7fc3aea509ed3b125e493969a6437c698'
+        type: ''
       }
     },
     created: function () {
-      this.getQustions()
-      console.log(Utils.isAndroid())
+      this.token ? this.getQustions() : null
+    },
+    props: ['token'],
+    watch: {
+      token: function (val) {
+        val && val !== '' ? this.getQustions() : null
+      }
     },
     methods: {
       getQustions: function () {
@@ -224,11 +227,10 @@
         })
       },
       closeResult: function () {
+        bridgeUtil.webConnectNative('HCNative_BackToPrePage', null, {}, function (response) {}, null)
         this.showResult = false
         this.questionAndAnswer = {}
         var answer = document.getElementsByClassName('answer')
-        // var aswSpan = document.getElementsByClassName('answer-span')
-        console.log(aswSpan)
         var aswSpan = []
         for (var i = 0; i < answer.length; i++) {
           answer[i].classList.remove('selected')
@@ -283,7 +285,7 @@
     margin-bottom: .2rem;
   }
   .questionnaire .question .answers .answer.selected {
-    background-color: #fd8f3f;
+    background-color: #ff611d;
     color: #fff
   }
   .questionnaire .question .answers .answer span {
@@ -300,13 +302,24 @@
     background-size: contain;
   }
   .questionnaire .submit-btn {
-    width: 54%;
-    height: 38px;
-    margin: 0 23%;
+    padding: 0rem 0rem 0.05rem;
+    width: 100%;
+    height: 1rem;
+    background: url('../../images/user-center/invite-btn.png') no-repeat 0 0;
+    background-size: cover;
     font-weight: 400;
-    font-size: .24rem;
-    line-height: 38px;
-    margin-top: 1rem;
+    font-size: .28rem;
+    margin-top: .5rem;
+  }
+  .questionnaire .button-disabled {
+    width: 100%;
+    height: 1rem;
+    padding: 0rem 0rem 0.05rem;
+    background: url('../../images/user-center/disabled-btn.png') no-repeat 0 0;
+    background-size: cover;
+    font-weight: 400;
+    font-size: .28rem;
+    margin-top: .5rem;
   }
   .questionnaire .errMsg {
     background: url('../../images/user-center/transfer-msg.png') no-repeat;
@@ -321,7 +334,7 @@
     bottom: 39px;
   }
   .mask-common .wrap {
-    margin-top: 57%;
+    margin-top: 45%;
   }
   .mask-common .wrap-conyent {
     background-color: #fff;
@@ -330,21 +343,30 @@
     padding: .4rem;
     width: 86%;
     margin: 0 auto;
-    border-radius: .1rem;
+    border-radius: .2rem;
     line-height: 1.6;
   }
+  .wrap-conyent p.title {
+    font-size: .28rem;
+    color: #ff611d;
+    margin-bottom: .4rem;
+  }
+  .wrap-conyent p.text-justify {
+    font-size: .24rem;
+    color: #666;
+  }
   .question-btn {
-    width: 43%;
-    height: .5rem;
+    width: 45%;
+    height: .6rem;
     display: block;
-    background-color: #fd8f3f;
-    border: 1px solid #fd8f3f;
-    border-radius: .5em;
-    line-height: .5rem;
+    background-color: #ff611d;
+    border: 1px solid #ff611d;
+    border-radius: .8rem;
+    line-height: .6rem;
     text-align: center;
-    margin: .4rem 29% .1rem;
+    margin: .6rem 27% .1rem;
     color: #fff;
-    font-size: .23rem;
+    font-size: .28rem;
     font-weight: initial;
   }
 </style>

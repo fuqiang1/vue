@@ -1,3 +1,6 @@
+require('es6-promise').polyfill()
+var Promise = require('es6-promise').Promise
+global.Promise = global.Promise || require('es6-promise').Promise
 var path = require('path')
 var utils = require('./utils')
 var webpack = require('webpack')
@@ -6,8 +9,8 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var env = process.env.NODE_ENV === 'testing'
-  ? require('../config/test.env')
+var env = process.env.NODE_ENV === 'production'
+  ? require('../config/prod.env')
   : config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
@@ -20,8 +23,8 @@ var webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+    filename: utils.assetsPath('js/[name].[chunkhash:8].js'),
+    chunkFilename: utils.assetsPath('js/[name].[chunkhash:8].js')
   },
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
@@ -36,13 +39,13 @@ var webpackConfig = merge(baseWebpackConfig, {
     }),
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css')
+      filename: utils.assetsPath('css/[name].[contenthash:8].css')
     }),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: process.env.NODE_ENV === 'testing'
+      filename: process.env.NODE_ENV === 'production'
         ? 'index.html'
         : config.build.index,
       template: 'index.html',

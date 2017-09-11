@@ -1,16 +1,16 @@
 <template>
   <div class="invite-reward overflow-hid" v-auto-height>
     <div class="head">
-      <p class="text-center">您已成功邀请<span class="ft-3 display-inbl margin-l-1 margin-r-1">{{inviteCount}}</span>位好友了！</p>
+      <p class="text-center">您已成功邀请<span class="ft-3 display-inbl margin-l-1 margin-r-1">{{inviteCount || 0}}</span>位好友了！</p>
     </div>
     <p class="friend-ship">好友共为您带来</p>
     <div class="part2">
       <div>
-        <p class="text-center">{{privilegedCapital.amount}}</p>
+        <p class="text-center">{{privilegedCapital.amount | number}}</p>
         <p class="text-center">累计特权本金(元)</p>
       </div>
       <div>
-        <p class="text-center">{{privilegedCapital.profit | number}}</p>
+        <p class="text-center">{{privilegedCapital.profit | number }}</p>
         <p class="text-center">累计收益(元)</p>
       </div>
     </div>
@@ -65,22 +65,35 @@
       return {
         isiOS: false,
         inviteCount: 0,
-        privilegedCapital: 0,
+        privilegedCapital: {
+          amount: 0,
+          profit: 0
+        },
         details: [],
         pageSize: 10,
         page: 1,
-        totalPage: 1,
-        token: String
+        totalPage: 1
       }
     },
     created: function () {
-      this.token = this.$route.params.token
       this.isiOS = Utils.isIos()
-      this.InvitePrivilegedUsers()
-      this.invitePrivilegedRewardStat()
-      this.getInvitePrivilegedRewards(this.page, this.pageSize)
-      this.getVoucher()
-      bridgeUtil.setupWebViewJavascriptBridge()
+      if (this.token) {
+        this.InvitePrivilegedUsers()
+        this.invitePrivilegedRewardStat()
+        this.getInvitePrivilegedRewards(this.page, this.pageSize)
+        this.getVoucher()
+      }
+    },
+    props: ['token'],
+    watch: {
+      token: function (val) {
+        if (val && val !== '') {
+          this.InvitePrivilegedUsers()
+          this.invitePrivilegedRewardStat()
+          this.getInvitePrivilegedRewards(this.page, this.pageSize)
+          this.getVoucher()
+        }
+      }
     },
     methods: {
       getintervalDays: function (firstInvestTime) {
@@ -98,7 +111,7 @@
           url: '/hongcai/rest/activitys/invitePrivilegedUsers?token=' + this.token
         }).then((response) => {
           if (response.data && response.data.ret !== -1) {
-            this.inviteCount = response.data.data
+            this.inviteCount = response.data
           }
         })
       },
@@ -202,7 +215,7 @@
 .con-invite-btn p {
   -webkit-transform: scale(0.8);
   transform: scale(0.8);
-  font-size: .2rem;
+  font-size: .1rem;
   color: #fff;
 }
 .con-invite-btn img {

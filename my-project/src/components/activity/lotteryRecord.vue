@@ -1,9 +1,9 @@
 <template>
-  <div class="lottery-record">
+  <div class="lottery-record" v-auto-height>
     <div class="lottery-list-wrap">
       <div class="lottery-list-header">(最近两周内)</div>
       <!-- prizeType：1, "当日加息"" ; 2, "现金奖励 ; 3, "加息券 ; 4, "现金券" ; 5, "特权本金" -->
-      <ul v-if="userLotteryRecord && userLotteryRecord.length > 0">
+      <ul v-show="showRecord">
         <li v-for="record in userLotteryRecord " class="text-left">
           <span v-if="record.prizeType === 1"><img src="../../images/lottery/one-day-rate-icon.png" width="100%"></span>
           <span v-if="record.prizeType === 2"><img src="../../images/lottery/cash-icon.png" width="100%"></span>
@@ -17,12 +17,12 @@
           <span v-if="record.prizeType === 5">特权本金</span>
           <span v-if="record.prizeType === 3 || record.prizeType === 1">{{record.value}}%</span>
           <span v-if="record.prizeType === 2">{{record.value}}元</span>
-            <span v-if="record.prizeType === 5 || record.prizeType === 4">{{record.value.slice(0,-3)}}元</span>
+            <span v-if="token && record.prizeType === 5 || record.prizeType === 4">{{record.value.slice(0,-3)}}元</span>
           <span class="ft-1p2 fr">{{record.time | dateTime }}</span>
         </li>
-          <li class="text-center ft-grey999 border-none">已无更多记录</li>
+        <li class="text-center ft-grey999 border-none" v-show="userLotteryRecord.length > 0 && userLotteryRecord[0].value">已无更多记录</li>
       </ul>
-      <div class="no-data" v-show="userLotteryRecord && userLotteryRecord.length <= 0">
+      <div class="no-data" v-show="token && !showRecord">
         <img src="../../images/lottery/no-data.png" width="60%" class="margin-auto display-bl">
         <img src="../../images/lottery/hc-baby.png" width="26%" class="margin-auto display-bl">
       </div>
@@ -39,24 +39,34 @@
           prizeType: 4
         },
         userLotteryRecord: [],
-        token: '9c438068699b1c092f2e65895feebaba8bc575a4dec742dd'
+        showRecord: false
       }
     },
     created: function () {
-      var that = this
-      that.token = that.$route.params.token
-      console.log(that.token)
-      that.$http({
-        url: '/hongcai/rest/lotteries/rewards?token=' + that.token
-      })
-      .then(function (res) {
-        that.userLotteryRecord = res.data
-      })
-      .catch(function (err) {
-        console.log(err)
-      })
+      this.token ? this.getLotteryRecord() : null
     },
-    methos: {
+    props: ['token'],
+    watch: {
+      'token': function (val) {
+        val && val !== '' ? this.getLotteryRecord() : null
+      },
+      userLotteryRecord: function (val) {
+        val.length > 0 ? this.showRecord = true : this.showRecord = false
+      }
+    },
+    methods: {
+      getLotteryRecord: function () {
+        var that = this
+        that.$http({
+          url: '/hongcai/rest/lotteries/rewards?token=' + that.token
+        })
+        .then(function (res) {
+          that.userLotteryRecord = res.data
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+      }
     }
   }
 </script>
@@ -80,10 +90,16 @@
   }
   .lottery-record .lottery-list-wrap {
     width: 92%;
-    height: 8rem;
+    height: 128%;
     margin: 0 auto;
     background: url('../../images/lottery/record-list-bg.png') 0 0 no-repeat;
-    background-size: 100% 100%; 
+    background-size: 100% 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media(max-height: 480px) {
+    .lottery-record .lottery-list-wrap {
+      height: 150%;
+    }
   }
   .lottery-record .lottery-list-wrap .lottery-list-header {
     width: 93%;
