@@ -76,6 +76,13 @@
     data () {
       return {
       }
+    },
+    created () {
+      // this.$http({
+      //   url: '/user'
+      // }).then(function (res) {
+      //   console.log(res)
+      // })
     }
   }
 </script>

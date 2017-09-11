@@ -9,17 +9,17 @@ body {
   line-height: 1.6;
   color: #222;
 }
+body.modal-open{
+  position:fixed;
+  width:100%;
+}
 * {
   padding: 0;
   margin: 0;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select:none;
 }
 div, a, p, img, span, ul, li {
+  -webkit-user-select: none;
+  -moz-user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -52,10 +52,15 @@ ul,li {
 }
 input,button,select,textarea {
   outline:none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select:none;
+  -webkit-appearance: none;
+}
+div.input-focus, p.input-focus {
+  transform: translateY(-2rem);
+  -webkit-transition:all .2s ease-out;
+  -moz-transition:all .2s ease-out;
+  -o-transition:all .2s ease-out;
+  -ms-transition:all .2s ease-out;    
+  transition:all .2s ease-out;
 }
 /*button*/
 .button {
@@ -82,11 +87,11 @@ input,button,select,textarea {
   border-color: #fd8f3f;
   border: none !important;
 }
-.button-disabled {
+/* .button-disabled {
     background-color: #FEB682 !important;
     color: #fff;
     border: none !important;
-}
+} */
 /* setposition */
 
 .position-re {
@@ -161,6 +166,9 @@ input,button,select,textarea {
     visibility: hidden;
     clear: both;
 }
+.clearfix {
+  clear: both;
+}
 /*font color*/
 
 .ft-444 {
@@ -173,40 +181,6 @@ input,button,select,textarea {
   color: #ff2424;
 }
 /*font size*/
-/*@media screen and (min-width: 320px) {
-  .ft-24 {
-    font-size: 14px;
-  }
-  .ft-28 {
-    font-size: 15px;
-  }
-  .ft-30 {
-    font-size: 16px;
-  }
-}*/
-/*@media screen and (min-width: 375px) {
-  .ft-24 {
-    font-size: 15px;
-  }
-  .ft-28 {
-    font-size: 16px;
-  }
-  .ft-30 {
-    font-size: 17px;
-  }
-}*/
-/*@media screen and (min-width: 410px) {
-  .ft-24 {
-    font-size: 15px;
-  }
-  .ft-28 {
-    font-size: 16px;
-  }
-  .ft-30 {
-    font-size: 17px;
-  }
-}*/
-
 /*font family*/
 .ft-Arial {
   font-family: Arial;
@@ -228,25 +202,18 @@ input,button,select,textarea {
 .margin-auto {
   margin: 0 auto;
 }
-.display-inb {
-  display: inline-block;
-}
-.margin-auto {
-  margin: 0 auto;
-}
-.clearfix {
-  clear: both;
-}
 
-/*公用mask*/
+/*公用蒙层*/
 .mask-common {
   position: fixed;
   top: 0;
   z-index: 999999;
-  bottom: 0;
+  bottom: -5px;
   left: 0;
   right: 0;
   max-width: 640px;
   margin: 0 auto;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0,0,0,0.6);
+  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden !important;
 }

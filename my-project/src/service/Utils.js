@@ -1,4 +1,9 @@
+import $ from 'zepto'
 let Utils = {
+  isWeixin: function () {
+    var ua = navigator.userAgent.toLowerCase()
+    return ua.match(/MicroMessenger/i) === 'micromessenger'
+  },
   isAndroid: function () {
     let userAgent = navigator.userAgent || navigator.vendor || window.opera
     return /android/i.test(userAgent) && !/windows phone/i.test(userAgent)
@@ -10,6 +15,23 @@ let Utils = {
   isWinPhone: function () {
     var userAgent = navigator.userAgent || navigator.vendor || window.opera
     return /windows phone/i.test(userAgent)
+  },
+  deviceCode: function () {
+    var deviceCode = 0
+    if (Utils.isAndroid()) {
+      deviceCode = 2
+    }
+    if (this.isWeixin() && Utils.isAndroid()) {
+      deviceCode = 3
+    }
+    if (Utils.isIos()) {
+      deviceCode = 5
+    }
+    if (this.isWeixin() && Utils.isIos()) {
+      deviceCode = 6
+    }
+    console.log(deviceCode)
+    return deviceCode
   }
 }
 let InviteShareUtils = {
@@ -84,12 +106,14 @@ let bridgeUtil = {
       document.addEventListener(
         'WebViewJavascriptBridgeReady'
         , function () {
-          window.WebViewJavascriptBridge.init(function (message, responseCallback) {
-            var data = {
-              'Javascript Responds': 'Wee!'
-            }
-            responseCallback(data)
-          })
+          try {
+            window.WebViewJavascriptBridge.init(function (message, responseCallback) {
+              var data = {
+                'Javascript Responds': 'Wee!'
+              }
+              responseCallback(data)
+            })
+          } catch (e) {}
           callback(window.WebViewJavascriptBridge)
         },
         false
@@ -108,7 +132,6 @@ let bridgeUtil = {
       }
       return
     }
-
     this.setupWebViewJavascriptBridge(function (bridge) {
       // 调用native方法
       if (callHandlerName) {
@@ -121,7 +144,108 @@ let bridgeUtil = {
     })
   }
 }
+/**
+ * 滚动穿透问题
+ */
+let ModalHelper = (function (bodyCls) {
+  return {
+    scrollTop: document.scrollingElement ? document.scrollingElement.scrollTop : document.body.scrollTop,
+    afterOpen: function () {
+      ModalHelper.scrollTop = document.scrollingElement ? document.scrollingElement.scrollTop : document.body.scrollTop
+      document.body.classList.add(bodyCls)
+      document.body.style.top = -ModalHelper.scrollTop + 'px'
+    },
+    beforeClose: function () {
+      document.body.classList.remove(bodyCls)
+      document.body.removeAttribute('style')
+      if (document.scrollingElement) {
+        document.scrollingElement.scrollTop = ModalHelper.scrollTop
+      } else {
+        document.body.scrollTop = ModalHelper.scrollTop
+      }
+    }
+  }
+})('modal-open')
+/**
+ * 两个日期相差天数
+ */
+let dateUtil = {
+  intervalDays: function (timeInMills1, timeInMills2) {
+    var t1 = new Date(timeInMills1)
+    var t2 = new Date(timeInMills2)
+    t1.setHours(0)
+    t1.setMinutes(0)
+    t1.setSeconds(0)
+    t1.setMilliseconds(0)
+    t2.setHours(0)
+    t2.setMinutes(0)
+    t2.setSeconds(0)
+    t2.setMilliseconds(0)
+    var DAY_TIME_IN_MILLS = 24 * 60 * 60 * 1000
+    return Math.abs((t1.getTime() - t2.getTime()) / DAY_TIME_IN_MILLS)
+  }
+}
+/**
+ * 发送验证码动画
+ */
+let sendMobCaptcha = {
+  second: 60,
+  canGetMobileCapcha: true,
+  countDown: function ($mobilecode) {
+    // 如果秒数还是大于0，则表示倒计时还没结束
+    if (sendMobCaptcha.second > 0) {
+      // 倒计时不结束按钮不可点
+      sendMobCaptcha.canGetMobileCapcha = false
+      $mobilecode.innerHTML = null
+      $mobilecode.innerHTML = sendMobCaptcha.second + 's'
+      $mobilecode.className = ''
+      // 时间减一
+      sendMobCaptcha.second -= 1
+      // 一秒后重复执行
+      setTimeout(function () {
+        sendMobCaptcha.countDown($mobilecode)
+      }, 1000)
+      // 否则，按钮重置为初始状态,可点击
+    } else {
+      sendMobCaptcha.canGetMobileCapcha = true
+      $mobilecode.className += ' send'
+      $mobilecode.innerHTML = '重新获取'
+      sendMobCaptcha.second = 60
+    }
+  }
+}
+/**
+ * 安卓键盘弹出挡住输入框解决方法
+ */
+let InputMaskHelper = (function (eleCls) {
+  return {
+    focus: function (ele) {
+      if (Utils.isAndroid()) {
+        ele.classList.add(eleCls)
+      }
+    },
+    blur: function (ele) {
+      if (Utils.isAndroid()) {
+        ele.classList.remove(eleCls)
+      }
+    },
+    windowChange: function (ele) {
+      var winHeight = $(window).height()
+      window.addEventListener('resize', function () {
+        if ($(window).height() < winHeight) {
+          setTimeout(InputMaskHelper.focus(ele), 0)
+        } else {
+          InputMaskHelper.blur(ele)
+        }
+      })
+    }
+  }
+})('input-focus')
 export {Utils}
 export {InviteShareUtils}
-export {ruleBox}
 export {bridgeUtil}
+export {ModalHelper}
+export {dateUtil}
+export {sendMobCaptcha}
+export {InputMaskHelper}
+export {ruleBox}

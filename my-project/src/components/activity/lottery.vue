@@ -46,7 +46,7 @@
           </div>
         </div>
       <div class="lottery-other">
-          <p class="display-inb" @click="ruleBox(showRules)">活动规则</p>
+          <p class="display-inb" @click="ruleBox()">活动规则</p>
           <p class="display-inb" @click="toLotteryRecord()">我的奖励</p>
         </div>
         <!-- 幸运用户 -->
@@ -62,7 +62,7 @@
       </div>
     </div>
     <!--中奖弹窗-->
-    <div class="share-page-breakWishLayer showDrawBox" v-show="showDrawBox">
+    <div class="mask-common showDrawBox" v-show="showDrawBox">
       <div class="draw-box">
         <!-- 抽奖 获得奖励-->
         <div class="receive-draw" v-if="receiveDraw">
@@ -90,7 +90,7 @@
       </div>
     </div>
     <!--活动规则-->
-    <div class="share-page-breakWishLayer text-center" v-show="showRules">
+    <div class="mask-common text-center" v-show="showRules">
       <div class="rule-box">
         <div class="rule-title">
           <img src="../../images/lottery/rule-title.png" width="50%">
@@ -111,23 +111,21 @@
           </div>
         </div>
       </div>
-      <img src="../../images/lottery/close-drawBox.png" alt="关闭弹窗" width="8%" @click="ruleBox(showRules)">
+      <img src="../../images/lottery/close-drawBox.png" alt="关闭弹窗" width="8%" @click="ruleBox()">
     </div>
   </div>
 </template>
 
 <script>
-  import {Utils, ruleBox, bridgeUtil} from '../../service/Utils'
-  import $ from 'jquery'
+  import {Utils, bridgeUtil, ModalHelper} from '../../service/Utils'
+  import $ from 'zepto'
   import {LuckDraw} from '../../service/rect.luckdraw.js'
   export default {
     name: 'lottery',
     data () {
       return {
         drawCount: 0,
-        isiOS: true,
         prizeList: {},
-        token: '',
         showRules: false,
         canShare: false,
         showDrawBox: false,
@@ -137,27 +135,38 @@
         shareCallHandCallback: null,
         luckyUsers: [],
         timer: null,
-        isIos: Utils.isIos(),
+        isiOS: Utils.isIos(),
         isAndroid: Utils.isAndroid(),
-        domain: 'http://m.test321.hongcai.com'
+        domain: process.env.domain
+      }
+    },
+    props: ['token'],
+    watch: {
+      token: function (value) {
+        if (value !== '') {
+          this.getDrawCount(this.token)
+        }
+      },
+      showDrawBox: function (val) {
+        val ? ModalHelper.afterOpen() : ModalHelper.beforeClose()
       }
     },
     created: function () {
-      document.title = '幸运大抽奖'
-      this.token = this.$route.query.token
-      this.getDrawCount(this.token)
       this.getLuckyUsers()
-      bridgeUtil.setupWebViewJavascriptBridge()
+      if (this.token) {
+        this.getDrawCount(this.token)
+      }
+      var that = this
       this.shareRegisterCallback = function (data) {
-        data = JSON.parse(data)
+        data = Utils.isAndroid() ? JSON.parse(data) : data
         if (data.isShareSuccess === 1) {
-          window.vue.$http.post('/hongcai/rest/lotteries/share', {
-            token: window.vue.token
+          that.$http.post('/hongcai/rest/lotteries/share', {
+            token: that.token
           })
           .then(function (res) {
             if (res.data && res.data.ret !== -1) {
-              window.vue.drawCount = !res.data.isEffective ? window.vue.drawCount : window.vue.drawCount + 1
-              this.showDrawBox = false
+              that.drawCount = !res.data.isEffective ? that.drawCount : that.drawCount + 1
+              that.showDrawBox = false
             }
           })
           .catch(function (err) {
@@ -165,20 +174,13 @@
           })
         }
       }
-      window.vue = this
-      window.onload = function (e) {
-        window.vue.luckyTimer(-2.5)
-        window.vue.isShare = function () {
-          bridgeUtil.webConnectNative('HCNative_NeedShare', 'HCWeb_ShareSuccess', {
-            'HC_shareType': 2,
-            'title': '今日运势，一试便知',
-            'subTitle': '100%有礼！随机奖金、特权本金、返现加息券样样都有！好运从这里开始！',
-            'url': this.domain + '/lottery',
-            'imageUrl': 'https://mmbiz.qlogo.cn/mmbiz_jpg/8MZDOEkib8AlvibTmbDkqwbDiasl9BphCGgYnicBzl9VfX4Sm9cpvFiarGsV73IRYurUF9LPibzL0JLR5SGmd1TeO3ug/0?wx_fmt=jpeg'
-          }, function (response) {}, window.vue.shareRegisterCallback)
-        }
-        window.vue.isShare()
-      }
+      bridgeUtil.webConnectNative('HCNative_NeedShare', 'HCWeb_ShareSuccess', {
+        'HC_shareType': 2,
+        'title': '今日运势，一试便知',
+        'subTitle': '100%有礼！随机奖金、特权本金、返现加息券样样都有！好运从这里开始！',
+        'url': that.domain + '/lottery',
+        'imageUrl': 'https://mmbiz.qlogo.cn/mmbiz_jpg/8MZDOEkib8AlvibTmbDkqwbDiasl9BphCGgYnicBzl9VfX4Sm9cpvFiarGsV73IRYurUF9LPibzL0JLR5SGmd1TeO3ug/0?wx_fmt=jpeg'
+      }, function (response) {}, that.shareRegisterCallback)
     },
     methods: {
       draw: function (prizeId) {
@@ -190,17 +192,11 @@
           turnStartCallback: function () {
           },
           turnEndCallback: function (prizeId, obj) {
-            setTimeout(function () {
-              that.showDrawBox = true
-              var $lottry = document.querySelector('#lottery')
-              // var $itemMask = document.querySelector('.item-mask')
-              $lottry.className = 'position-fix'
-              // $itemMask.style.display = 'none'
-              $('.lottery-item').addClass('selecting')
-            }, 300)
+            that.showDrawBox = true
+            $('.lottery-item').addClass('selecting')
           },
           startBtnClick: function ($btn) {
-            if (this.isLocked()) {
+            if (LuckDraw.isLocked()) {
               return
             }
             // prizeId ? LuckDraw.start(prizeId) : ''
@@ -209,33 +205,28 @@
       },
       toLotteryRecord: function () {
         if (!this.token || this.token === '') {
-          var regesterHandCallback = function (data) {
-            data = JSON.parse(data)
-            window.location.replace(window.location.pathname + '/' + data.token)
-          }
-          bridgeUtil.webConnectNative('HCNative_Login', 'HCWeb_LoginSuccess', {}, function (response) {}, regesterHandCallback)
+          bridgeUtil.webConnectNative('HCNative_Login', '', {}, function (response) {}, '')
           return
         }
-        this.$router.push({name: 'LotteryRecord', params: { token: this.token }})
+        this.$router.push({name: 'LotteryRecord'})
       },
-      ruleBox: function (closeBox) {
-        ruleBox.showRuleBox(document.querySelector('#lottery'), this, closeBox)
+      ruleBox: function () {
+        // ruleBox.showRuleBox(document.querySelector('#lottery'), this, closeBox)
+        this.showRules = !this.showRules
+        this.showRules ? ModalHelper.afterOpen() : ModalHelper.beforeClose()
       },
       closeDraw: function (showDrawBox) {
         this.showDrawBox = !this.showDrawBox
-        this.showDrawBox ? document.querySelector('#lottery').className = 'position-fix' : document.querySelector('#lottery').className = ' '
       },
       toLogin: function () {
-        var regesterHandCallback = function (data) {
-          data = JSON.parse(data)
-          window.location.replace(window.location.pathname + '?token=' + data.token)
-          this.isShare()
-        }
-        bridgeUtil.webConnectNative('HCNative_Login', 'HCWeb_LoginSuccess', {}, function (response) {}, regesterHandCallback)
+        bridgeUtil.webConnectNative('HCNative_Login', undefined, {}, function (response) {}, null)
       },
       getPrize: function () {
         if (!this.token || this.token === '') {
           this.toLogin()
+          return
+        }
+        if (LuckDraw.isLocked()) {
           return
         }
         this.$http.post('/hongcai/rest/lotteries/draw', {
@@ -250,19 +241,17 @@
             } else if (response.data.code === -1301) {
               this.usedAndcanShare = true
             } else {
-              alert(response.data.msg)
+              // alert(response.data.msg)
+              this.showDrawBox = false
             }
           } else {
             this.receiveDraw = true
             this.usedAndcanShare = false
             $('.lottery-item').removeClass('selecting')
-            // var $itemMask = document.querySelector('.item-mask')
-            // $itemMask.style.display = 'block'
             var receivePrize = response.data
             var prizeId = receivePrize.prizeType || 1
             // console.log(prizeId)
             this.canShare = response.data.canShare
-            $('.lottery-item').removeClass('selecting')
             this.draw(prizeId)
             LuckDraw.start(prizeId)
             switch (prizeId) {
@@ -321,7 +310,6 @@
       },
       getDrawCount: function (token) {
         var that = this
-        token = that.$route.query.token
         that.$http({
           url: '/hongcai/rest/lotteries/drawCount?token=' + token
         })
@@ -340,10 +328,10 @@
           'HC_shareType': 2,
           'title': '今日运势，一试便知',
           'subTitle': '100%有礼！随机奖金、特权本金、返现加息券样样都有！好运从这里开始！',
-          'url': 'm.hongcai.com/lottery',
+          'url': that.domain + '/lottery',
           'imageUrl': 'https://mmbiz.qlogo.cn/mmbiz_jpg/8MZDOEkib8AlvibTmbDkqwbDiasl9BphCGgYnicBzl9VfX4Sm9cpvFiarGsV73IRYurUF9LPibzL0JLR5SGmd1TeO3ug/0?wx_fmt=jpeg'
         }, function () {}, that.shareRegisterCallback)
-        this.showDrawBox = false
+        that.showDrawBox = false
       },
       getLuckyUsers: function () {
         var that = this
@@ -372,6 +360,7 @@
                 break
             }
           }
+          that.luckyTimer(-2.5)
         })
       },
       luckyTimer: function (val) {
@@ -396,22 +385,13 @@
 </script>
 <style scoped>
   .lucky-users-box.animate {
-    -webkit-transition:all 1.5s ease-in-out;
-    -moz-transition:all 1.5s ease-in-out;
-    -o-transition:all 1.5s ease-in-out;
-    -ms-transition:all 1.5s ease-in-out;    
-    transition:all 1.5s ease-in-out;
+    -webkit-transition:all 1s ease-in-out;
+    -moz-transition:all 1s ease-in-out;
+    -o-transition:all 1s ease-in-out;
+    -ms-transition:all 1s ease-in-out;    
+    transition:all 1s ease-in-out;
     -webkit-transform:translateY(-2.5rem);
     transform:translateY(-2.5rem);
-  }
-  .lottery{
-    font-family: "微软雅黑" !important;
-    -webkit-touch-callout:none;  /*系统默认菜单被禁用*/   
-    -webkit-user-select:none; /*webkit浏览器*/   
-    -khtml-user-select:none; /*早期浏览器*/   
-    -moz-user-select:none;/*火狐*/   
-    -ms-user-select:none; /*IE10*/   
-    user-select:none;   
   }
   .lottery .lottery-wrap {
     background: url('../../images/lottery/lottery-bg.jpg') 0 0 no-repeat;
@@ -504,35 +484,21 @@
     color: #000;
     margin-bottom: .23rem;
   }
-
-  .share-page-breakWishLayer {
-    position: fixed;
-    top: 0;
-    z-index: 999999;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    background-color: rgba(0, 0, 0, 0.8);
-  }
   /*中奖弹窗*/
-  .showDrawBox {
-    /*display: none;*/
-  }
   .draw-box {
     text-align: center;
   }
   .draw-box .receive-draw {
     text-align: center;
-    padding: 22% 0 .4rem;
+    padding: 16% 0 .4rem;
     /*display: none;*/
   }
   .draw-box .receive-draw .getPrize {
     background: url('../../images/lottery/receive-draw-02.png') no-repeat center center;
     background-size: contain;
-    height: 4.5rem;
-    padding-top: 2.45rem;
-    margin-top: .5rem;
+    height: 4rem;
+    padding-top: 2.15rem;
+    margin-top: .3rem;
     font-size: .24rem;
   }
   .draw-box .receive-draw .getPrize p {
@@ -543,7 +509,7 @@
   .draw-box .receive-draw .prize-effect {
     color: #fff;
     font-size: .24rem;
-    margin: 0.3rem 0;
+    margin: 0.1rem 0 0.3rem;
   }
   .draw-box .upper-limit {
     padding: 40% 0 .4rem;
@@ -553,7 +519,8 @@
   }
   /*规则弹窗*/
   .rule-box {
-    padding: 21% .2rem .5rem;
+    padding: 20% .2rem .5rem;
+    -webkit-overflow-scrolling: touch;
   }
   .rule-box .rule-title {
     position: relative;
@@ -588,60 +555,53 @@
     color: #000;
     margin: 0.7rem 0 0;
   }
-  @media(min-width: 320px) {
-    .lottery .lottery-wrap {
-      padding-top: 1.5rem;
-      height: 15rem;
-    }
-    .lottery .lottery-wrap .draw-lottery {
-      height: 7.6rem;
-    }
-    .lottery .lottery-wrap .draw-lottery p {
-      height: 1.3rem;
-      line-height: 2.4rem;
-      margin-bottom: 0;
-      color: #222;
-    }
-    .lottery .lottery-wrap .draw-lottery .draw-count {
-      font-size: .37rem;
-      margin-right: .1rem;
-      color: #f5fb60;
-    }
-    .lottery .lottery-wrap .draw-lottery .lottery-box {
-        padding-top: .88rem;
-    }
-    .lottery .lottery-wrap .lucky-users .lucky-users-wrap {
-      height: 5.7rem;
-    }
-    .lottery .lottery-wrap .lucky-users .lucky-users-wrap li{
-      font-size: .24rem;
-      margin-bottom: 0;
-      height: .5rem;
-      line-height: .5rem;
-    }
-    .lottery .lottery-wrap .lucky-users .lucky-users-wrap li span{
-      display: inline-block;
-      width: 46%;
-    }
-    .about-background, .bank-custody, .risk-safety ul li {
-      width: 92%;
-    }
-    /*.rule-box {
-      padding: 20% .2rem .1rem;
-    }
-    .rule-box .rule-bg {
-      height: 6rem;
-    }
-    .rule-box .rule-bg .rule-content {
-      height: 4.86rem;
-      top: .5rem;
-      padding: 0 1rem;
-    }
-    .rule-box .rule-title .hongcai-portrait {
-      top: -.6rem;
-    }*/
+  .lottery .lottery-wrap {
+    padding-top: 1.5rem;
+    height: 15rem;
+  }
+  .lottery .lottery-wrap .draw-lottery {
+    height: 7.6rem;
+  }
+  .lottery .lottery-wrap .draw-lottery p {
+    height: 1.3rem;
+    line-height: 2.4rem;
+    margin-bottom: 0;
+    color: #222;
+  }
+  .lottery .lottery-wrap .draw-lottery .draw-count {
+    font-size: .37rem;
+    margin-right: .1rem;
+    color: #f5fb60;
+  }
+  .lottery .lottery-wrap .draw-lottery .lottery-box {
+      padding-top: .88rem;
+  }
+  .lottery .lottery-wrap .lucky-users .lucky-users-wrap {
+    height: 5.7rem;
+  }
+  .lottery .lottery-wrap .lucky-users .lucky-users-wrap li{
+    font-size: .24rem;
+    margin-bottom: 0;
+    height: .5rem;
+    line-height: .5rem;
+  }
+  .lottery .lottery-wrap .lucky-users .lucky-users-wrap li span{
+    display: inline-block;
+    width: 46%;
+  }
+  .about-background, .bank-custody, .risk-safety ul li {
+    width: 92%;
+  }
+  .draw-box .receive-draw {
+    padding: 18% 0 .2rem;
+  }
+  @media(max-height: 480px) {
     .draw-box .receive-draw {
-      padding: 22% 0 .2rem;
+      padding:  0 0 .4rem;
+    }
+    .rule-box {
+      padding: 0 .2rem .5rem;
+      -webkit-overflow-scrolling: touch;
     }
   }
 </style>

@@ -30,7 +30,7 @@
             <!-- 邀请好友>0 && 活动进行中 ：从页面底部弹出分享框 -->
             <div class="invite-btn" v-show="isLogged && isInvitedFriends && !isActivityEnd">
                 <!-- 查看奖励按钮 -->
-                <router-link :to="{name: 'ActivityReward',params: {token: token}}">
+                <router-link :to="{name: 'ActivityReward'}">
                     <img src="../../images/invite/rewards-btn.png" width="40%" class="rewards-btn">
                 <!-- 继续邀请按钮 -->
                 </router-link>
@@ -41,7 +41,7 @@
             <!-- 邀请好友>0 && 活动停止 -->
             <div class="invite-btn" v-show="isLogged && isActivityEnd">
                 <!-- 查看奖励按钮 -->
-                <router-link :to="{name: 'ActivityReward',params: {token: token}}">
+                <router-link :to="{name: 'ActivityReward'}">
                     <img src="../../images/invite/rewards-btn.png" width="40%" class="rewards-btn">
                 </router-link>
                 <!-- 点击出现活动结束页面 -->
@@ -53,7 +53,7 @@
             <div class="invite-rule" @click="showRuleBox"></div>
         </div>
         <!-- 活动规则 -->
-        <div class="invite-Rulebox" v-if="showRules">
+        <div class="invite-Rulebox mask-common" v-if="showRules">
             <div class="ruleBox width-100 height-100 position-re bg-grey0p5" >
                 <div class="box">
                     <div class="rec-act-rule bg-white border-ra-0p5">
@@ -81,8 +81,8 @@
                             &nbsp;1）10%特权加息券1张 <br/>
                             &nbsp;2）精选加息券：0.3%、0.5%、0.8%，各1张 <br/>
                             &nbsp;3）尊贵加息券：0.8%、1.2%、1.6%，各1张 <br/>
-                            &nbsp;4）精选现金券：总计167元现金投资券 <br/>
-                            &nbsp;5）尊贵现金券：总计826元现金投资券
+                            &nbsp;4）精选现金券：总计184元现金投资券 <br/>
+                            &nbsp;5）尊贵现金券：总计782元现金投资券
                         </p>
                         <p class="rule-content"><i class="fa fa-circle" aria-hidden="true"></i><span>新用户须在注册之日起30天内进行首次投资宏财精选或宏财尊贵产品，老用户才可获得相应特权本金。</span></p>
                     </div>
@@ -111,32 +111,47 @@
 </template>
 
 <script>
-import {Utils, InviteShareUtils, ruleBox, bridgeUtil} from '../../service/Utils'
+import {Utils, InviteShareUtils, bridgeUtil, ModalHelper} from '../../service/Utils'
 export default {
   name: 'Invite',
   data () {
     return {
       showRules: false,
-      isLogged: Boolean,
+      isLogged: false,
       isInvitedFriends: true,
       isActivityEnd: false,
       isiOS: true,
-      token: '',
-      voucher: String
+      voucher: '',
+      shareItem: {},
+      nativeNeedDatas: {}
     }
   },
   created: function () {
-    this.token = this.$route.query.token
     this.token ? this.getInvitedFriends() : ''
+    this.token ? this.getInviteCode() : ''
     this.isiOS = Utils.isIos()
     this.token ? this.isLogged = true : this.isLogged = false
-    bridgeUtil.setupWebViewJavascriptBridge()
-    this.token ? this.getVoucher() : ''
+    bridgeUtil.webConnectNative('HCNative_NeedInviteList', null, {
+      // 1 需要显示 0 不需要显示
+      isShow: 0
+    }, function (res) {}, null)
+  },
+  props: ['token'],
+  watch: {
+    token: function (value) {
+      if (value && value !== '') {
+        this.getInvitedFriends()
+        this.getInviteCode()
+      }
+      this.token ? this.isLogged = true : this.isLogged = false
+    }
   },
   methods: {
     showRuleBox: function () {
-      var $invite = document.querySelector('#invite')
-      ruleBox.showRuleBox($invite, this, this.showRules)
+    //   var $invite = document.querySelector('#invite')
+    //   ruleBox.showRuleBox($invite, this, this.showRules)
+      this.showRules = !this.showRules
+      this.showRules ? ModalHelper.afterOpen() : ModalHelper.beforeClose()
     },
     getInvitedFriends: function () {
       this.$http({
@@ -156,26 +171,33 @@ export default {
         }
       })
     },
-    getVoucher: function () {
+    toLogin: function () {
+    //   var regesterHandCallback = function (data) {
+    //     data = Utils.isIos() === true ? data : JSON.parse(data)
+    //     window.location.replace(window.location.pathname)
+    //     this.getInvitedFriends()
+    //   }
+      bridgeUtil.webConnectNative('HCNative_Login', '', {}, function (response) {}, null)
+    },
+    getInviteCode: function () {
       var that = this
       that.$http({
         method: 'get',
         url: '/hongcai/rest/users/0/voucher?token=' + that.token
-      }).then((response) => {
-        if (response.data && response.data.ret !== -1) {
-          that.voucher = response.data.inviteCode
+      }).then(function (response) {
+        that.voucher = response.data.inviteCode
+        that.shareItem = InviteShareUtils.share(that.voucher)
+        that.nativeNeedDatas = {
+          'HC_shareType': 1,
+          'title': that.shareItem.title,
+          'subTitle': that.shareItem.subTitle,
+          'url': that.shareItem.linkUrl,
+          'imageUrl': that.shareItem.imageUrl
         }
       })
     },
-    toLogin: function () {
-      var regesterHandCallback = function (data) {
-        data = JSON.parse(data)
-        window.location.replace(window.location.pathname + '?token=' + data.token)
-        this.getInvitedFriends()
-      }
-      bridgeUtil.webConnectNative('HCNative_Login', 'HCWeb_LoginSuccess', {}, function (response) {}, regesterHandCallback)
-    },
     toShare: function () {
+      // var that = this
       if (!this.token || this.token === '') {
         this.toLogin()
         return
@@ -184,16 +206,7 @@ export default {
         alert('活动结束')
         return
       }
-      var shareItem = InviteShareUtils.share(this.voucher)
-      var nativeNeedDatas = {
-        'HC_shareType': 1,
-        'title': shareItem.title,
-        'subTitle': shareItem.subTitle,
-        'url': shareItem.linkUrl,
-        'imageUrl': shareItem.imageUrl
-      }
-      bridgeUtil.webConnectNative('HCNative_Share', null, nativeNeedDatas, function (response) {
-        alert('分享成功')
+      bridgeUtil.webConnectNative('HCNative_Share', null, this.nativeNeedDatas, function (response) {
       }, null)
     }
   }
@@ -201,6 +214,9 @@ export default {
 </script>
 
 <style scoped>
+    #invite {
+        background-image: linear-gradient(to bottom, #f8902d 0%, #f8902d 100%);
+    }
     .imgs {
         margin-bottom: 1rem;
     }
@@ -247,13 +263,6 @@ export default {
         right: 0rem;
     }
     .invite-Rulebox {
-        position: fixed;
-        top: 0;
-        z-index: 99999;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
         padding: 0 .3rem;
         background: rgba(0,0,0,.5);
     }
@@ -362,5 +371,16 @@ export default {
         .tips {
             left: 0.7rem;
         }
+    }
+    @media(max-height: 480px) {
+      .ruleBox {
+        height: 8rem;
+      }
+      .box {
+        top: 1rem;
+      }
+      .close-rule {
+        bottom: 2%;
+      }
     }
 </style>
