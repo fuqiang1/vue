@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 import Vue from 'vue'
 import {bridgeUtil, Utils} from './service/Utils'
 import * as custom from './filters/custom'
@@ -91,18 +92,6 @@ Vue.directive('auto-height', function (el, binding) {
     text-align: center;
     color: #2c3e50;
   }
-  #footer {
-    height: 53px;
-    background: #fff;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 8px 0 3px;
-    border-top: 1px solid #eee;
-    z-index: 9999999;
-  }
   #app .mask-common.mask1 {
     background-color: transparent;
   }
@@ -129,10 +118,6 @@ Vue.directive('auto-height', function (el, binding) {
     line-height: .8rem;
     background-color: #fff;
     border-radius: 0 0 .2rem .2rem;
-  }
-  ul#footer li {
-    float: left;
-    width: 33.33%;
   }
   /* 错误提示 */
   #err {

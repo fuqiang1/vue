@@ -5,14 +5,18 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-Vue.use(VueAxios, axios)
+import Vuex from 'vuex'
+import store from './vuex/store'
 
+Vue.use(Vuex, VueAxios, axios)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  render: h => h(App)
 })
