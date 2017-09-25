@@ -44,6 +44,7 @@ const Events = r => require.ensure([], () => r(require('../views/events.vue')), 
 const RiskEducation = r => require.ensure([], () => r(require('../views/riskEducation.vue')), 'RiskEducation')
 const Register = r => require.ensure([], () => r(require('../views/activity/oldPeople.vue')), 'Register')
 const RegisterSuccess = r => require.ensure([], () => r(require('../views/activity/registerSuccess.vue')), 'Register')
+const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 Vue.use(Router)
 const routes = [
@@ -205,6 +206,11 @@ const routes = [
     name: 'MangoPromotion',
     component: MangoPromotion,
     meta: {title: '0元变身VIP'}
+  },
+  {
+    path: '/wandu-register',
+    name: 'WanduRegister',
+    component: WanduRegister
   },
   {
     path: '/register-agree',
