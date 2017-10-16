@@ -22,7 +22,7 @@ const Introduction = r => require.ensure([], () => r(require('../views/about/int
 const ContactUs = r => require.ensure([], () => r(require('../views/about/contactUs.vue')), 'About')
 const Partner = r => require.ensure([], () => r(require('../views/about/partner.vue')), 'About')
 const Safe = r => require.ensure([], () => r(require('../views/safe.vue')), 'Safe')
-const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
+// const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
 const NoticeDetail = r => require.ensure([], () => r(require('../views/user-center/noticeDetail.vue')), 'others')
 const bankCardLimit = r => require.ensure([], () => r(require('../views/user-center/bankCardLimit.vue')), 'others')
 const AssignmentList = r => require.ensure([], () => r(require('../views/user-center/assignmentList.vue')), 'others')
@@ -46,16 +46,15 @@ const Report3 = r => require.ensure([], () => r(require('../views/news/report3.v
 const Events = r => require.ensure([], () => r(require('../views/events.vue')), 'Events')
 const RiskEducation = r => require.ensure([], () => r(require('../views/riskEducation.vue')), 'RiskEducation')
 const Register = r => require.ensure([], () => r(require('../views/activity/oldPeople.vue')), 'Register')
-// const RegisterSuccess = r => require.ensure([], () => r(require('../views/activity/registerSuccess.vue')), 'Register')
 const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
-// const WanduSuccess = r => require.ensure([], () => r(require('../views/activity/wandu-success.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
+const Test = r => require.ensure([], () => r(require('../views/test.vue')), 'others')
 Vue.use(Router)
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Test',
+    component: Test
   },
   {
     path: '/businessSuccess',
