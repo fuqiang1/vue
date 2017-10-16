@@ -88,12 +88,11 @@
       // })
     },
     mounted () {
-      console.log(swiper)
       swiper.init({
         autoSwipe: true,
         axisX: true,
         continuousScroll: true,
-        speed: 2500,
+        speed: 2000,
         transitionType: 'cubic-bezier(0.22, 0.69, 0.72, 0.88)',
         firstCallback: function (i, sum) {
           $('#slideBanner').find('.dot').children().first().addClass('cur')
