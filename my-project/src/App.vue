@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
 import Vue from 'vue'
 import {bridgeUtil, Utils} from './service/Utils'
 import * as custom from './filters/custom'
@@ -35,6 +34,13 @@ export default {
   created: function () {
     this.getToken()
     this.receiveToken()
+  },
+  mounted () {
+    var vue = this
+    window.addEventListener('touchmove', function (event) {
+      event.stopPropagation()
+      vue.showErr ? vue.showErr = false : null
+    }, false)
   },
   methods: {
     getToken: function () {
@@ -62,9 +68,13 @@ export default {
         that.timer = setTimeout(function () {
           that.showErr = false
           that.errMsg = ''
-        }, 1000)
+        }, 2000)
       }
     }
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'getToken'
   }
 }
 Object.keys(custom).forEach(key => {
@@ -85,12 +95,25 @@ Vue.directive('auto-height', function (el, binding) {
 
 <style lang="css">
   @import 'styles/common.css';
+  @import 'styles/golden-mask.css';
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+  }
+  #footer {
+    height: 53px;
+    background: #fff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 8px 0 3px;
+    border-top: 1px solid #eee;
+    z-index: 9999999;
   }
   #app .mask-common.mask1 {
     background-color: transparent;
@@ -118,6 +141,10 @@ Vue.directive('auto-height', function (el, binding) {
     line-height: .8rem;
     background-color: #fff;
     border-radius: 0 0 .2rem .2rem;
+  }
+  ul#footer li {
+    float: left;
+    width: 33.33%;
   }
   /* 错误提示 */
   #err {

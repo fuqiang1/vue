@@ -7,6 +7,13 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
 import store from './vuex/store'
+import FastClick from 'fastclick'
+
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', function () {
+    FastClick.attach(document.body)
+  }, false)
+}
 
 Vue.use(Vuex, VueAxios, axios)
 Vue.config.productionTip = false

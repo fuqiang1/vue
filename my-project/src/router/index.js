@@ -13,6 +13,9 @@ const CoolSummerPlan = r => require.ensure([], () => r(require('../views/activit
 const Novice = r => require.ensure([], () => r(require('../views/activity/novice.vue')), 'Novice')
 const MangoPromotion = r => require.ensure([], () => r(require('../views/activity/mangoPromotion.vue')), 'MangoTV')
 const MangoTV = r => require.ensure([], () => r(require('../views/activity/MangoTV.vue')), 'MangoTV')
+const GoldenFall = r => require.ensure([], () => r(require('../views/activity/goldenFall.vue')), 'GoldenFall')
+const GoldenDetail = r => require.ensure([], () => r(require('../views/activity/goldenDetail.vue')), 'GoldenDetail')
+const GoldenRecord = r => require.ensure([], () => r(require('../views/activity/goldenRecord.vue')), 'GoldenRecord')
 const About = r => require.ensure([], () => r(require('../views/about/about.vue')), 'About')
 const ManagementTeam = r => require.ensure([], () => r(require('../views/about/managementTeam.vue')), 'About')
 const Introduction = r => require.ensure([], () => r(require('../views/about/introduction.vue')), 'About')
@@ -43,8 +46,9 @@ const Report3 = r => require.ensure([], () => r(require('../views/news/report3.v
 const Events = r => require.ensure([], () => r(require('../views/events.vue')), 'Events')
 const RiskEducation = r => require.ensure([], () => r(require('../views/riskEducation.vue')), 'RiskEducation')
 const Register = r => require.ensure([], () => r(require('../views/activity/oldPeople.vue')), 'Register')
-const RegisterSuccess = r => require.ensure([], () => r(require('../views/activity/registerSuccess.vue')), 'Register')
+// const RegisterSuccess = r => require.ensure([], () => r(require('../views/activity/registerSuccess.vue')), 'Register')
 const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
+// const WanduSuccess = r => require.ensure([], () => r(require('../views/activity/wandu-success.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 Vue.use(Router)
 const routes = [
@@ -208,9 +212,22 @@ const routes = [
     meta: {title: '0元变身VIP'}
   },
   {
-    path: '/wandu-register',
-    name: 'WanduRegister',
-    component: WanduRegister
+    path: '/activity/golden-fall',
+    name: 'GoldenFall',
+    component: GoldenFall,
+    meta: {title: '蟹逅金秋'}
+  },
+  {
+    path: '/activity/golden-detail',
+    name: 'GoldenDetail',
+    component: GoldenDetail,
+    meta: {title: '积分明细'}
+  },
+  {
+    path: '/activity/golden-record',
+    name: 'GoldenRecord',
+    component: GoldenRecord,
+    meta: {title: '兑换记录'}
   },
   {
     path: '/register-agree',
@@ -296,11 +313,21 @@ const routes = [
     name: 'Register',
     component: Register
   },
+  // {
+  //   path: '/activity/register-success',
+  //   name: 'RegisterSuccess',
+  //   component: RegisterSuccess
+  // },
   {
-    path: '/activity/register-success',
-    name: 'RegisterSuccess',
-    component: RegisterSuccess
+    path: '/wandu-register',
+    name: 'WanduRegister',
+    component: WanduRegister
   },
+  // {
+  //   path: '/wandu-success',
+  //   name: 'WanduSuccess',
+  //   component: WanduSuccess
+  // },
   {
     path: '/qrcode',
     name: 'QRcode',
