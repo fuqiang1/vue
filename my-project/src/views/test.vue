@@ -77,9 +77,15 @@
     name: 'home',
     data () {
       return {
+        obj: $('#slideBanner')
       }
     },
     created () {
+      // this.$http({
+      //   url: '/user'
+      // }).then(function (res) {
+      //   console.log(res)
+      // })
     },
     mounted () {
       swiper.init({

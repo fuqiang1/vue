@@ -49,13 +49,6 @@ const Register = r => require.ensure([], () => r(require('../views/activity/oldP
 const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 const Test = r => require.ensure([], () => r(require('../views/test.vue')), 'others')
-const LevelProtection = r => require.ensure([], () => r(require('../views/level-protection/levelProtection.vue')), 'level')
-const Custody = r => require.ensure([], () => r(require('../views/level-protection/bankCustody.vue')), 'level')
-const Filing = r => require.ensure([], () => r(require('../views/level-protection/filing.vue')), 'level')
-const RiskManagement = r => require.ensure([], () => r(require('../views/level-protection/riskManagement.vue')), 'level')
-const Organization = r => require.ensure([], () => r(require('../views/level-protection/organization.vue')), 'level')
-const Operating = r => require.ensure([], () => r(require('../views/level-protection/operating.vue')), 'level')
-const gameCounting = r => require.ensure([], () => r(require('../views/games/game-counting.vue')), 'games')
 Vue.use(Router)
 const routes = [
   {
@@ -96,74 +89,6 @@ const routes = [
         name: 'Partner',
         component: Partner,
         meta: {title: '走进宏财'}
-      }
-    ]
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: About,
-    children: [
-      {
-        path: 'management-team',
-        name: 'ManagementTeam',
-        component: ManagementTeam,
-        meta: {title: '走进宏财'}
-      },
-      {
-        path: '',
-        name: 'Introduction',
-        component: Introduction,
-        meta: {title: '走进宏财'}
-      },
-      {
-        path: 'contact-us',
-        name: 'ContactUs',
-        component: ContactUs,
-        meta: {title: '走进宏财'}
-      },
-      {
-        path: 'partner',
-        name: 'Partner',
-        component: Partner,
-        meta: {title: '走进宏财'}
-      }
-    ]
-  },
-  {
-    path: '/level-protect',
-    name: 'LevelProtection',
-    component: LevelProtection,
-    children: [
-      {
-        path: 'custody',
-        name: 'Custody',
-        component: Custody,
-        meta: {title: '信息纰漏'}
-      },
-      {
-        path: 'filing',
-        name: 'Filing',
-        component: Filing,
-        meta: {title: '信息纰漏'}
-      },
-      {
-        path: 'risk',
-        name: 'RiskManagement',
-        component: RiskManagement,
-        meta: {title: '信息纰漏'}
-      },
-      {
-        path: 'organization',
-        name: 'Organization',
-        component: Organization,
-        meta: {title: '信息纰漏'}
-      },
-      {
-        path: 'operating',
-        name: 'Operating',
-        component: Operating,
-        meta: {title: '信息纰漏'}
       }
     ]
   },
@@ -387,11 +312,11 @@ const routes = [
     name: 'Register',
     component: Register
   },
-  {
-    path: '/game/game-counting',
-    name: 'gameCounting',
-    component: gameCounting
-  },
+  // {
+  //   path: '/activity/register-success',
+  //   name: 'RegisterSuccess',
+  //   component: RegisterSuccess
+  // },
   {
     path: '/wandu-register',
     name: 'WanduRegister',
@@ -409,7 +334,7 @@ const routes = [
   },
   {
     path: '*',
-    redirect: {name: 'Test'}
+    redirect: {name: 'Home'}
   }
 ]
 const router = new Router({
