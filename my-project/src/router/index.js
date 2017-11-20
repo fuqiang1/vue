@@ -16,6 +16,7 @@ const MangoTV = r => require.ensure([], () => r(require('../views/activity/Mango
 const GoldenFall = r => require.ensure([], () => r(require('../views/activity/goldenFall.vue')), 'GoldenFall')
 const GoldenDetail = r => require.ensure([], () => r(require('../views/activity/goldenDetail.vue')), 'GoldenDetail')
 const GoldenRecord = r => require.ensure([], () => r(require('../views/activity/goldenRecord.vue')), 'GoldenRecord')
+const Anniversary = r => require.ensure([], () => r(require('../views/activity/anniversary.vue')), 'Anniversary')
 const About = r => require.ensure([], () => r(require('../views/about/about.vue')), 'About')
 const ManagementTeam = r => require.ensure([], () => r(require('../views/about/managementTeam.vue')), 'About')
 const Introduction = r => require.ensure([], () => r(require('../views/about/introduction.vue')), 'About')
@@ -227,6 +228,12 @@ const routes = [
     name: 'GoldenRecord',
     component: GoldenRecord,
     meta: {title: '兑换记录'}
+  },
+  {
+    path: '/activity/anniversary',
+    name: 'Anniversary',
+    component: Anniversary,
+    meta: {title: '三周年狂欢'}
   },
   {
     path: '/register-agree',

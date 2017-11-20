@@ -15,7 +15,8 @@ if ('addEventListener' in document) {
   }, false)
 }
 
-Vue.use(Vuex, VueAxios, axios)
+Vue.use(VueAxios, axios)
+Vue.use(Vuex)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -24,6 +25,5 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App },
-  render: h => h(App)
+  components: { App }
 })

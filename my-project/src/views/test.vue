@@ -81,11 +81,8 @@
       }
     },
     created () {
-      // this.$http({
-      //   url: '/user'
-      // }).then(function (res) {
-      //   console.log(res)
-      // })
+      let s = Symbol()
+      console.log(typeof s)
     },
     mounted () {
       swiper.init({
