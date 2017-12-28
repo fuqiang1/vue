@@ -92,7 +92,7 @@ output属性 告诉webpack在哪里发出它创建的包以及如何命名这些
 }
 
 ```
-以上配置，告诉webpack，我们要把他创建的包放在/build/dist/目录下，静态文件引入目录也是/build/dist/，入口文件及引用的资源打包后是‘入口文件名.js’，其他文件打包后是‘文件名.sh0h3.min.js’格式
+以上配置，告诉webpack，我们要把他创建的包放在'/build/dist/'目录下，静态文件引入目录也是'/build/dist/'，入口文件及引用的资源打包后是‘入口文件名.js’，其他文件打包后是‘文件名.sh0h3.min.js’格式
 
 了解更多output配置，查看 [https://webpack.github.io/docs/configuration.html](output)
 
@@ -149,9 +149,9 @@ loader用来转换某些类型文件，但是插件可以实现更多功能
 
 ![plugins](https://raw.githubusercontent.com/fuqiang1/vue/develop/my-project/static/plugins.jpg)
 
-####1. [postcss](https://github.com/postcss/postcss)
+#### 1. [postcss](https://github.com/postcss/postcss)
 
-[postcss](https://github.com/postcss/postcss)是一个用JS插件转换样式的工具
+[postcss](https://github.com/postcss/postcss)是一个用JS插件转换样式的工具
 webpack2+里不能直接在rules里添加,要用插件LoaderOptionsPlugin再加到plugins配置中：
 
 ```javascript
@@ -171,11 +171,13 @@ new webpack.LoaderOptionsPlugin({
 })
 ```
 
- [postcss](https://github.com/postcss/postcss)常用插件：
+##### [postcss](https://github.com/postcss/postcss) 常用插件：
 
-1）[postcss-import](https://github.com/postcss/postcss-import)：要解析@import规则的路径
+##### 1）[postcss-import](https://github.com/postcss/postcss-import)：
 
-```css
+要解析@import规则的路径
+
+```less
     /* 例如：@import "cssrecipes-defaults"; @import "normalize.css"; */
     /* 将会得到： */
 
@@ -183,7 +185,9 @@ new webpack.LoaderOptionsPlugin({
     /* ... content of ../node_modules/normalize.css/normalize.css */
 ```
 
-2）[postcss-sassy-mixins](https://github.com/andyjansson/postcss-sassy-mixins): 和sass关键字混合使用,例如:
+##### 2）[postcss-sassy-mixins](https://github.com/andyjansson/postcss-sassy-mixins):
+
+和sass关键字混合使用,例如:
 
 ```css
     @mixin border-radius($radius) {
@@ -201,7 +205,9 @@ new webpack.LoaderOptionsPlugin({
     }
 ```
 
-3）[precss](https://github.com/jonathantneal/precss)：可以让你在你的CSS文件中使用类似Sass的标记，例如：
+##### 3）[precss](https://github.com/jonathantneal/precss)：
+
+可以让你在你的CSS文件中使用类似Sass的标记，例如：
 
 ```css
     /* before */
@@ -227,7 +233,9 @@ new webpack.LoaderOptionsPlugin({
     }
 ```
 
-4）[autoprefixer](https://github.com/postcss/autoprefixer)：将供应商前缀添加到CSS:
+##### 4）[autoprefixer](https://github.com/postcss/autoprefixer)：
+
+将供应商前缀添加到CSS:
 
 ```css
     /* before */
@@ -253,7 +261,9 @@ new webpack.LoaderOptionsPlugin({
     }
 ```
 
-5）[postcss-cssnext](http://cssnext.io/)：允许使用最新的css语法(已包含autoprefixer)，跟postcss中的autoprefixer重复，运行时报以下警告：（ TODO：如何消除这一警告 ）
+##### 5）[postcss-cssnext](http://cssnext.io/)：
+
+允许使用最新的css语法(已包含autoprefixer)，跟postcss中的autoprefixer重复，运行时报以下警告：（ TODO：如何消除这一警告 ）
 
 
 ![warning](https://raw.githubusercontent.com/fuqiang1/vue/develop/my-project/static/warning.jpg)
@@ -262,7 +272,8 @@ new webpack.LoaderOptionsPlugin({
 (了解postcss更多插件，查阅 [https://github.com/postcss/postcss](https://github.com/postcss/postcss))
 
 
-2. [DefinePlugin](https://doc.webpack-china.org/plugins/define-plugin/) 允许创建一个在编译时可以配置的全局常量
+#### 2. [DefinePlugin](https://doc.webpack-china.org/plugins/define-plugin/) 
+允许创建一个在编译时可以配置的全局常量
 
 ```javascript
 new webpack.DefinePlugin({
@@ -281,7 +292,9 @@ new webpack.DefinePlugin({
 // 以上变量可以通过 process.env.damain 或者 hello 全局获取使用
 ```
 
-3. [HotModuleReplacementPlugin](https://doc.webpack-china.org/plugins/hot-module-replacement-plugin/)启用热替换模块(Hot Module Replacement)，也被称为 HMR, 拓展用法参见[https://webpack.js.org/concepts/](https://webpack.js.org/concepts/)
+#### 3. [HotModuleReplacementPlugin](https://doc.webpack-china.org/plugins/hot-module-replacement-plugin/)
+
+启用热替换模块(Hot Module Replacement)，也被称为 HMR, 拓展用法参见[https://webpack.js.org/concepts/](https://webpack.js.org/concepts/)
 
 ```javascript
 new webpack.HotModuleReplacementPlugin({
