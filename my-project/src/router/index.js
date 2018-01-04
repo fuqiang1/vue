@@ -16,6 +16,7 @@ const MangoTV = r => require.ensure([], () => r(require('../views/activity/Mango
 const GoldenFall = r => require.ensure([], () => r(require('../views/activity/goldenFall.vue')), 'GoldenFall')
 const GoldenDetail = r => require.ensure([], () => r(require('../views/activity/goldenDetail.vue')), 'GoldenDetail')
 const GoldenRecord = r => require.ensure([], () => r(require('../views/activity/goldenRecord.vue')), 'GoldenRecord')
+const NewYear = r => require.ensure([], () => r(require('../views/activity/newYear.vue')), 'NewYear')
 const Anniversary = r => require.ensure([], () => r(require('../views/activity/anniversary.vue')), 'Anniversary')
 const About = r => require.ensure([], () => r(require('../views/about/about.vue')), 'About')
 const ManagementTeam = r => require.ensure([], () => r(require('../views/about/managementTeam.vue')), 'About')
@@ -156,6 +157,12 @@ const routes = [
     name: 'LotteryRecord',
     component: LotteryRecord,
     meta: {title: '我的奖励'}
+  },
+  {
+    path: '/activity/new-year',
+    name: 'NewYear',
+    component: NewYear,
+    meta: {title: '新春红包'}
   },
   {
     path: '/user-center/bankcard-limit',

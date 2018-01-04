@@ -118,6 +118,8 @@ var Carousel = {
     }
     this._setActive(this.index);
   },
+  startPos: {},
+  endPos: {},
   _bindEvent: function() {
     utils.on(this.wrapper, 'touchstart', this._start.bind(this));
     utils.on(this.wrapper, 'touchmove', this._move.bind(this));
@@ -126,8 +128,14 @@ var Carousel = {
   _start: function(e) {
     this.startTime = utils.getTime();
     this._reset();
+    let touch = e.targetTouches[0]
+    this.startPos = {x: touch.pageX, y: touch.pageY}
   },
   _move: function(e) {
+    let touch = e.targetTouches[0]
+    this.endPos = {x: touch.pageX - this.startPos.x, y: touch.pageY - this.startPos.y}
+    var isScrolling = Math.abs(this.endPos.x) < Math.abs(this.endPos.y) ? 1 : 0
+    if (isScrolling === 1) {return}
     if (!e.touches) return;
     if (!!this.animated) return;
     e.preventDefault();
