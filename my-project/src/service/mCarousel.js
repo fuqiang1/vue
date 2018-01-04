@@ -401,6 +401,7 @@ Carousel.mCarousel = function(el, opts) {
   this.before = opts.before || function() {};
   this.after = opts.after || function() {};
   this.locked = opts.locked || false;
+  this.diff = opts.diff || 2
   if (this.length < 4) this.locked = true;
 
   this.viewW = this.wrapper.offsetWidth;
@@ -409,7 +410,7 @@ Carousel.mCarousel = function(el, opts) {
   // this.singleH = opts.height || this.elements[this.index].offsetHeight;
   this.centerX = (this.viewW - this.singleW) / 2;
   // this.centerY = (this.viewH - this.singleH) / 2;
-  this.diffX = (this.singleW - this.singleW * this.ratio) / 2; //计算(transformOrigin = 'center center')的偏移
+  this.diffX = (this.singleW - this.singleW * this.ratio) / this.diff; //计算(transformOrigin = 'center center')的偏移
   this.leftX = this._hasTransform2d ? -this.diffX : 0;
   this.rightX = this._hasTransform2d ? this.viewW - this.singleW + this.diffX : this.viewW - this.singleW;
   this.spaceX = this.centerX - this.leftX;
