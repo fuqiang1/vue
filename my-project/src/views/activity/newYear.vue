@@ -3,23 +3,23 @@
       <div class="position-re carousel-mask">
         <div id="wrapper">
           <ul class="poster-list clearfix clear">
-            <li class="">
-              <div class="red_bag_bg">5</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(5)">5</div>
             </li>
-            <li class="">
-              <div class="red_bag_bg">35</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(35)">35</div>
             </li>
-            <li class="">
-              <div class="red_bag_bg">90</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(90)">90</div>
             </li>
-            <li class="">
-              <div class="red_bag_bg">120</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(120)">120</div>
             </li>
-            <li class="">
-              <div class="red_bag_bg">150</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(150)">150</div>
             </li>
-            <li class="">
-              <div class="red_bag_bg">1288</div>
+            <li>
+              <div class="red_bag_bg" @click="openBag(1288)">1288</div>
             </li>
           </ul>
         </div>
@@ -34,46 +34,44 @@
     data () {
       return {
         cash: 90, // 当前最大可领取红包
-        carouselId: Function // 最大可领取对应的index值
+        carouselId: {
+          '5': 0,
+          '35': 1,
+          '90': 2,
+          '120': 3,
+          '150': 4,
+          '1288': 5
+        }, // 最大可领取对应的index值
+        canOpen: true, // 轮播切换中是否可拆
+        isOpened: false // 是否拆过红包
       }
     },
     created () {
-      switch (this.cash) {
-        case 5:
-          this.carouselId = 0
-          break
-        case 35:
-          this.carouselId = 1
-          break
-        case 90:
-          this.carouselId = 2
-          break
-        case 120:
-          this.carouselId = 3
-          break
-        case 150:
-          this.carouselId = 4
-          break
-        case 1288:
-          this.carouselId = 5
-          break
+    },
+    methods: {
+      openBag (cash) {
+        if (!this.canOpen || this.carouselId[cash] !== Carousel.index || cash > this.cash || this.isOpened) {
+          return
+        }
+        this.isOpened = true
+        alert(cash)
       }
     },
     mounted () {
       var that = this
       var wrapper = document.getElementById('wrapper')
       Carousel.mCarousel(wrapper, {
-        index: that.carouselId,
+        index: that.carouselId[that.cash],
         active: 'active',
-        scale: 0.7,
+        scale: 0.67,
         duration: 300,
         locked: true,
         diff: 0.45,
-        before: function () {
-          console.log('切换开始' + this.index)
+        before: function () { // 动画执行中不可拆红包
+          that.canOpen = false
         },
         after: function () {
-          console.log('切换结束' + this.index)
+          that.canOpen = true
         }
       })
     }
@@ -87,7 +85,8 @@
     height: 3.6rem;
   }
   .poster-list li {
-    width: 100%;
+    width: 72%;
+    margin: 0 auto;
     height: 100%;
   }
   .carousel-mask {
