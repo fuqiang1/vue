@@ -4,7 +4,8 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
-  author: 'hongcaiweb'
+  author: 'fuqiang',
+  age: 18
 }
 export default new Vuex.Store({
   state

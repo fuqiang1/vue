@@ -13,7 +13,6 @@ var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = process.env.NODE_ENV === 'test'
   ? require('./webpack.prod.conf')
   : require('./webpack.dev.conf')
-
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
@@ -21,10 +20,49 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
-
 var app = express()
 var compiler = webpack(webpackConfig)
 
+// 获取本地模拟接口数据
+var appData = require('../data.json')//加载本地数据文件
+var seller = appData.seller//获取对应的本地数据
+var goods = appData.goods
+var ratings = appData.ratings
+var areas = appData.areas
+var apiRoutes = express.Router()
+app.use('/api', apiRoutes)
+// 模仿接口配置本地json数据
+app.get('/api/seller', (req, res) => {
+  res.json({
+    errno: 0,
+    data: seller
+  })//接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+}),
+app.get('/api/goods', (req, res) => {
+  res.json({
+    errno: 0,
+    data: goods
+  })
+}),
+app.get('/api/ratings', (req, res) => {
+  res.json({
+    errno: 0,
+    data: ratings
+  })
+})
+app.post('/api/goods', function (req, res) { // 注意这里改为post就可以了
+  res.json({
+    errno: 0,
+    data: goods
+  });
+})
+// 热门国家和地区
+app.get('/api/areas', function (req, res) {
+  res.json({
+    errno: 0,
+    data: areas
+  });
+})
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true

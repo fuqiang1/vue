@@ -23,7 +23,6 @@ const Introduction = r => require.ensure([], () => r(require('../views/about/int
 const ContactUs = r => require.ensure([], () => r(require('../views/about/contactUs.vue')), 'About')
 const Partner = r => require.ensure([], () => r(require('../views/about/partner.vue')), 'About')
 const Safe = r => require.ensure([], () => r(require('../views/safe.vue')), 'Safe')
-// const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
 const NoticeDetail = r => require.ensure([], () => r(require('../views/user-center/noticeDetail.vue')), 'others')
 const bankCardLimit = r => require.ensure([], () => r(require('../views/user-center/bankCardLimit.vue')), 'others')
 const AssignmentList = r => require.ensure([], () => r(require('../views/user-center/assignmentList.vue')), 'others')
@@ -50,10 +49,16 @@ const Register = r => require.ensure([], () => r(require('../views/activity/oldP
 const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 const Test = r => require.ensure([], () => r(require('../views/test.vue')), 'others')
+const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
 Vue.use(Router)
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/test',
     name: 'Test',
     component: Test
   },
@@ -341,12 +346,10 @@ const routes = [
   },
   {
     path: '*',
-    redirect: {name: 'Home'}
+    redirect: {name: 'Test'}
   }
 ]
 const router = new Router({
-  hashbang: true, // 将路径格式化为#!开头
-  history: true, // use history=false when testing
   mode: 'history',
   base: __dirname,
   linkActiveClass: 'v-link-active',

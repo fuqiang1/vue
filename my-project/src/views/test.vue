@@ -103,12 +103,14 @@
     </div>
     <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update"/>
     <!-- <img src="../images/banner/banner1.png" alt=""> -->
+    <footer-div></footer-div>
   </div>
 </template>
 
 <script>
   import $ from 'zepto'
   import {swiper} from '../service/swipeSlide'
+  import footerDiv from 'components/footer'
   export default {
     name: 'home',
     data () {
@@ -120,6 +122,9 @@
     created () {
       let s = Symbol()
       console.log(typeof s)
+      this.$http.get('http://localhost:8888/api/goods').then((response) => {
+        // console.log(response)
+      })
     },
     mounted () {
       // this.lightCandle()
@@ -205,6 +210,9 @@
           console.log(response.data)
         })
       }
+    },
+    components: {
+      footerDiv
     }
   }
 </script>
@@ -399,83 +407,5 @@
   }
   .expert .info .name p {
     width: 50%;
-  }
-  /*投资页轮播*/
-  .slide-banner {
-    margin: 0 auto;
-  }
-  .bd{
-    z-index:0;
-  }
-  .bd li a img {
-    vertical-align:top;
-    width:100%;
-  }
-  .home {
-    background-color: #f8f5f5;
-    width: 100%; 
-    background-color: #f8f5f5; 
-    margin-bottom: 0.8rem;
-  }
-  .slide-banner, .modules {
-    margin-bottom: 0.3rem; 
-  }
-  .slide{
-      position: relative;
-      /*max-width: 640px;*/
-      overflow: hidden;
-      margin: 0 auto;
-  }
-  .slide:after{
-      content: '';
-      display: block;
-      width: 100%;
-      padding-top: 50%;
-  }
-  .slide ul{
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-  }
-  .slide li{
-      list-style: none;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-  }
-  /* 解决js阻塞页面显示首屏 */
-  .slide li:first-child{
-      z-index: 1;
-  }
-  .slide li img{
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-  }
-  .slide .dot{
-      position: absolute;
-      right: 40%;
-      bottom: 10px;
-      z-index: 5;
-      font-size: 0;
-  }
-  .slide .dot span{
-      display: inline-block;
-      width: .22rem;
-      height: .22rem;
-      margin-left: .12rem;
-      background-color: #f8f5f5;
-      border-radius: 50%;
-  }
-  .slide .dot .cur{
-      background-color: #fff;
-      border: 0.02rem solid #42b9ff;
   }
 </style>
