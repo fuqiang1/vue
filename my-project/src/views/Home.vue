@@ -61,7 +61,7 @@
       <p>热门国家或地区</p>
       <div class="hot_box">
         <div class="hot-son">
-          <div class="hot-son-inner" v-for="area in areaList">
+          <div class="hot-son-inner" v-for="area in areaList" @click="toAreaDetail(area.country)">
             <img :src="'../../static/images/' + area.country + '.png'" width="100%" height="100%">
             <span class="shade" :style="'background-color: ' + area.color + ';'"></span>
             <p>{{area.name}}</p>
@@ -89,6 +89,7 @@
       this.getAreas()
     },
     mounted () {
+      console.log(window.iSlider)
       swiper.init({
         autoSwipe: true,
         axisX: true,
@@ -109,6 +110,9 @@
           console.log(res.data.data)
           this.areaList = res.data.data
         })
+      },
+      toAreaDetail (name) {
+        this.$router.push({name: name})
       }
     },
     components: {

@@ -50,6 +50,15 @@ const WanduRegister = r => require.ensure([], () => r(require('../views/activity
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 const Test = r => require.ensure([], () => r(require('../views/test.vue')), 'others')
 const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
+const meiguo = r => require.ensure([], () => r(require('../views/areas/Meiguo.vue')), 'areas')
+const deguo = r => require.ensure([], () => r(require('../views/areas/deguo.vue')), 'areas')
+const faguo = r => require.ensure([], () => r(require('../views/areas/faguo.vue')), 'areas')
+const xinxilan = r => require.ensure([], () => r(require('../views/areas/xinxilan.vue')), 'areas')
+const taiguo = r => require.ensure([], () => r(require('../views/areas/taiguo.vue')), 'areas')
+const baxi = r => require.ensure([], () => r(require('../views/areas/baxi.vue')), 'areas')
+const aiji = r => require.ensure([], () => r(require('../views/areas/aiji.vue')), 'areas')
+const nanfei = r => require.ensure([], () => r(require('../views/areas/nanfei.vue')), 'areas')
+const tangjia = r => require.ensure([], () => r(require('../views/areas/tangjia.vue')), 'areas')
 Vue.use(Router)
 const routes = [
   {
@@ -61,6 +70,51 @@ const routes = [
     path: '/test',
     name: 'Test',
     component: Test
+  },
+  {
+    path: '/meiguo',
+    name: 'meiguo',
+    component: meiguo
+  },
+  {
+    path: '/baxi',
+    name: 'baxi',
+    component: baxi
+  },
+  {
+    path: '/faguo',
+    name: 'faguo',
+    component: faguo
+  },
+  {
+    path: '/deguo',
+    name: 'deguo',
+    component: deguo
+  },
+  {
+    path: '/xinxilan',
+    name: 'xinxilan',
+    component: xinxilan
+  },
+  {
+    path: '/taiguo',
+    name: 'taiguo',
+    component: taiguo
+  },
+  {
+    path: '/tangjia',
+    name: 'tangjia',
+    component: tangjia
+  },
+  {
+    path: '/nanfei',
+    name: 'nanfei',
+    component: nanfei
+  },
+  {
+    path: '/aiji',
+    name: 'aiji',
+    component: aiji
   },
   {
     path: '/businessSuccess',
