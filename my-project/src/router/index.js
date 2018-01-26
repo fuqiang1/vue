@@ -411,7 +411,7 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   if (to.meta.title === undefined) {
-    document.title = '宏财网'
+    document.title = 'fuqiang'
   } else {
     document.title = to.meta.title
   }
