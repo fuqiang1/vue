@@ -59,6 +59,13 @@ const baxi = r => require.ensure([], () => r(require('../views/areas/baxi.vue'))
 const aiji = r => require.ensure([], () => r(require('../views/areas/aiji.vue')), 'areas')
 const nanfei = r => require.ensure([], () => r(require('../views/areas/nanfei.vue')), 'areas')
 const tangjia = r => require.ensure([], () => r(require('../views/areas/tangjia.vue')), 'areas')
+const Disclosure = r => require.ensure([], () => r(require('../views/disclosure/disclosure.vue')), 'Disclosure')
+// const BankDisclosure = r => require.ensure([], () => r(require('../views/disclosure/bankDisclosure.vue')), 'Disclosure')
+const RecordInformation = r => require.ensure([], () => r(require('../views/disclosure/recordInformation.vue')), 'Disclosure')
+const RiskManagement = r => require.ensure([], () => r(require('../views/disclosure/riskManagement.vue')), 'Disclosure')
+const Organization = r => require.ensure([], () => r(require('../views/disclosure/organization.vue')), 'Disclosure')
+const BusinessInformation = r => require.ensure([], () => r(require('../views/disclosure/businessInformation.vue')), 'Disclosure')
+const Regulations = r => require.ensure([], () => r(require('../views/disclosure/regulations.vue')), 'Disclosure')
 Vue.use(Router)
 const routes = [
   {
@@ -115,6 +122,48 @@ const routes = [
     path: '/aiji',
     name: 'aiji',
     component: aiji
+  },
+  {
+    path: '/disclosure',
+    component: Disclosure,
+    children: [
+      // {
+      //   path: '',
+      //   name: 'BankDisclosure',
+      //   component: BankDisclosure,
+      //   meta: {title: '信息披露'}
+      // },
+      {
+        path: 'record-information',
+        name: 'RecordInformation',
+        component: RecordInformation,
+        meta: {title: '信息披露'}
+      },
+      {
+        path: 'regulations',
+        name: 'Regulations',
+        component: Regulations,
+        meta: {title: '信息披露'}
+      },
+      {
+        path: 'risk-management',
+        name: 'RiskManagement',
+        component: RiskManagement,
+        meta: {title: '信息披露'}
+      },
+      {
+        path: 'organization',
+        name: 'Organization',
+        component: Organization,
+        meta: {title: '信息披露'}
+      },
+      {
+        path: 'business-information',
+        name: 'BusinessInformation',
+        component: BusinessInformation,
+        meta: {title: '信息披露'}
+      }
+    ]
   },
   {
     path: '/businessSuccess',
