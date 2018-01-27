@@ -59,6 +59,8 @@
     </div>
     <div class="hot_area">
       <p>热门国家或地区</p>
+      <!-- 上个月第一天到最后一天 -->
+      {{year}}年-{{lastMonth}}月-1日 -- {{year}}年-{{lastMonth}}月-{{lastDate}}日
       <div class="hot_box">
         <div class="hot-son">
           <div class="hot-son-inner" v-for="area in areaList" @click="toAreaDetail(area.country)">
@@ -82,11 +84,15 @@
     data () {
       return {
         obj: $('#slideBanner'),
-        areaList: []
+        areaList: [],
+        lastMonth: new Date().getMonth(),
+        lastDate: 30,
+        year: new Date().getFullYear()
       }
     },
     created () {
       this.getAreas()
+      this.cacul()
     },
     mounted () {
       console.log(window.iSlider)
@@ -113,6 +119,18 @@
       },
       toAreaDetail (name) {
         this.$router.push({name: name})
+      },
+      cacul () {
+        let currentDate = new Date()
+        this.lastMonth = currentDate.getMonth() === 0 ? 12 : currentDate.getMonth()
+        this.year = this.lastMonth === 12 ? this.year - 1 : this.year
+        if (this.lastMonth === 4 || this.lastMonth === 6 || this.lastMonth === 9 || this.lastMonth === 11) {
+          this.lastDate = 30
+        } else if (this.lastMonth === 2) {
+          this.lastDate = this.year % 4 === 0 ? 29 : 28
+        } else {
+          this.lastDate = 31
+        }
       }
     },
     components: {

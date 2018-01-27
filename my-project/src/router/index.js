@@ -46,7 +46,7 @@ const Report3 = r => require.ensure([], () => r(require('../views/news/report3.v
 const Events = r => require.ensure([], () => r(require('../views/events.vue')), 'Events')
 const RiskEducation = r => require.ensure([], () => r(require('../views/riskEducation.vue')), 'RiskEducation')
 const Register = r => require.ensure([], () => r(require('../views/activity/oldPeople.vue')), 'Register')
-const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
+// const WanduRegister = r => require.ensure([], () => r(require('../views/activity/wandu-register.vue')), 'WanduRegister')
 const QRcode = r => require.ensure([], () => r(require('../views/QRcode.vue')), 'QRcode')
 const Test = r => require.ensure([], () => r(require('../views/test.vue')), 'others')
 const Home = r => require.ensure([], () => r(require('../views/Home.vue')), 'others')
@@ -383,11 +383,11 @@ const routes = [
   //   name: 'RegisterSuccess',
   //   component: RegisterSuccess
   // },
-  {
-    path: '/wandu-register',
-    name: 'WanduRegister',
-    component: WanduRegister
-  },
+  // {
+  //   path: '/wandu-register',
+  //   name: 'WanduRegister',
+  //   component: WanduRegister
+  // },
   // {
   //   path: '/wandu-success',
   //   name: 'WanduSuccess',
