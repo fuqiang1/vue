@@ -95,7 +95,6 @@
       this.cacul()
     },
     mounted () {
-      console.log(window.iSlider)
       swiper.init({
         autoSwipe: true,
         axisX: true,

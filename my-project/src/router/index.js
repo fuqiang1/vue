@@ -134,7 +134,7 @@ const routes = [
       //   meta: {title: '信息披露'}
       // },
       {
-        path: 'record-information',
+        path: '',
         name: 'RecordInformation',
         component: RecordInformation,
         meta: {title: '信息披露'}
