@@ -16,7 +16,7 @@
       </div>
       <p class="activityTime">活动时间: 2017.11.08～2017.12.12</p>
       <ul class="startBtns" v-if="activityStatus === 1">
-        <li v-for="item in startList" @click="goGame(item.gameType)">{{item.text}}</li>
+        <li v-for="item in startList" :key="item" @click="goGame(item.gameType)">{{item.text}}</li>
       </ul>
       <div class="activityEndBtns" v-if="activityStatus === 2">活动已结束</div>
       <div class="moneyBox">
@@ -56,7 +56,7 @@
       }
     },
     created () {
-      this.activityType = this.$route.query.act
+      this.activityType = this.$route.query.act // 34
       this.activityType ? this.getActivityStatus() : null
       this.token ? this.getGameCounts() : null
     },

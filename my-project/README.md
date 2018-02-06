@@ -6,17 +6,17 @@
 ## 配置[webpack](https://webpack.js.org/)前言
    首先要安装 Node.js， Node.js 自带了软件包管理器 npm，Webpack 需要 Node.js v0.6 以上支持，建议使用最新版 Node.js。
 
-```
-    <!-- 全局安装webpack -->
+```bash
+    # <!-- 全局安装webpack -->
     $ npm install webpack -g
 
-    <!-- 通常我们会将 Webpack 安装到项目的依赖中，这样就可以使用项目本地版本的 Webpack -->
+    # <!-- 通常我们会将 Webpack 安装到项目的依赖中，这样就可以使用项目本地版本的 Webpack -->
     # 进入项目目录
     # 确定已经有 package.json，没有就通过 npm init 创建
     # 安装 webpack 依赖
     $ npm install webpack --save-dev
 
-    github 上表明webpck1版本已被废弃，鼓励升级到 webpck2
+    # <!-- github 上表明webpck1版本已被废弃，鼓励升级到 webpck2 -->
     # 查看 webpack 版本信息
     $ npm info webpack
 

@@ -134,7 +134,9 @@
     created () {
     },
     mounted () {
-      iSlider.Slider()
+      iSlider.Slider({
+        isVertical: true
+      })
     }
   }
 </script>
