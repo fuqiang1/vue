@@ -644,7 +644,7 @@
               <li>
                 <div><p class="margin-b-0 display-inb bank-name">支持银行</p><p class="display-inb limit">单笔/单日/单月</p></div>
               </li>
-              <li class="clearfix margin-b-0 padding-r-1 border-t-dashed" :class="{'border-none': index === bankLimit.length - 1}" v-for="(card, index) in bankLimit">
+              <li class="clearfix margin-b-0 padding-r-1 border-t-dashed" :class="{'border-none': index === bankLimit.length - 1}" v-for="(card, index) in bankLimit" :key="card.index">
                 <div><p class="margin-b-0 display-inb bank-name">{{card.bankName}}</p><p class="display-inb limit">{{card.singleLimit < 0 ? '不限': card.singleLimit % 10000 === 0 ? card.singleLimit / 10000 + 'w' : card.singleLimit}}/{{card.dayLimit < 0 ? '不限': card.dayLimit % 10000 === 0 ? card.dayLimit / 10000 + 'w' : card.dayLimit}}/{{card.monthLimit < 0 ? '不限': card.monthLimit % 10000 === 0 ? card.monthLimit / 10000 + 'w' : card.monthLimit}}</p></div>
               </li>
             </ul>

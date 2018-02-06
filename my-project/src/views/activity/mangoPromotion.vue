@@ -28,7 +28,7 @@
       <div class="gift gift2">
         <p class="title">首投VIP再升级，季卡年卡送给你</p>
         <ul class="card-list position-re">
-          <li class="vip-card" v-for="card in cards">
+          <li class="vip-card" v-for="card in cards" :key="card.index">
             <p>首笔投资满{{card.minInvestAmount || 0}}元</p>
           </li>
           <img src="../../images/mangoTV/act-ending.png" width="50%" class="position-ab" v-if="actEnding === 2">

@@ -5,7 +5,7 @@
       <img src="../../images/disclosure/discolsure.png" width="35%" class="discolsure-title">
       <div class="tab">
         <ul class="discolsure-tab1 columns discolsureorange">
-          <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" @click="switchTab(index)">{{tab.tab}}</li>
+          <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" :key="tab.index" @click="switchTab(index)">{{tab.tab}}</li>
         </ul>
       </div>
     </div>
@@ -68,7 +68,7 @@
     mounted () {
       window.onscroll = function () {
         var t = document.documentElement.scrollTop || document.body.scrollTop
-        if (t >= 130) {
+        if (t >= 153) {
           $('.tab').addClass('fixed')
         } else {
           $('.tab').removeClass('fixed')
@@ -91,9 +91,11 @@
     z-index: 22222;
   }
   .discolsure .tab {
-    /* overflow: auto; */
+    /* overflow-x: auto;
+    overflow-y: hidden; */
     overflow: hidden;
     position: absolute;
+    -webkit-overflow-scrolling: touch;
     bottom: 0;
     left: 5%;
     border: 1px solid #fff;
@@ -108,7 +110,7 @@
     height: 1rem;
     /* overflow-x: auto; */
     overflow: hidden;
-    -webkit-overflow-scrolling: touch;
+    /* -webkit-overflow-scrolling: touch; */
     transform: translateX(0);
     -webkit-transition:all .4s ease-in-out;
     -moz-transition:all .4s ease-in-out;

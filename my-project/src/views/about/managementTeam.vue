@@ -17,7 +17,7 @@
         </div>
       </div>
       <!-- 高管介绍  -->
-      <div class="management-introduction" v-for="(people, index) in managements">
+      <div class="management-introduction" v-for="(people, index) in managements" :key="index">
         <div class="title">
           <span class="line1"></span>
           <span class="line2"></span>
@@ -144,7 +144,7 @@
       Carousel.mCarousel(wrapper, {
         index: 0,
         active: 'active',
-        scale: 0.6,
+        scale: 0.5,
         duration: 300,
         locked: true,
         before: function () {

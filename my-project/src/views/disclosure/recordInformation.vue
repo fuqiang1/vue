@@ -67,7 +67,7 @@
 <style scoped>
   ::-webkit-scrollbar {display:none}
   .about {padding-bottom: .5rem;}
-  p {
+  .about p {
     color: #666666;
     font-size: .26rem;
   }
@@ -103,7 +103,7 @@
     border-radius: 12.5px;
     width: 90%;
     overflow: hidden;
-    -webkit-transform:rotate(0deg)
+    -webkit-transform:rotate(0deg);
   }
   .slide{
     height: 100%;

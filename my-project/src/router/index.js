@@ -66,6 +66,15 @@ const RiskManagement = r => require.ensure([], () => r(require('../views/disclos
 const Organization = r => require.ensure([], () => r(require('../views/disclosure/organization.vue')), 'Disclosure')
 const BusinessInformation = r => require.ensure([], () => r(require('../views/disclosure/businessInformation.vue')), 'Disclosure')
 const Regulations = r => require.ensure([], () => r(require('../views/disclosure/regulations.vue')), 'Disclosure')
+const gameStart = r => require.ensure([], () => r(require('../views/games/game-counting-start.vue')), 'gameStart')
+const gameCounting = r => require.ensure([], () => r(require('../views/games/game-counting.vue')), 'gameCounting')
+const gameOver = r => require.ensure([], () => r(require('../views/games/game-counting-over.vue')), 'gameOver')
+const gameRecord = r => require.ensure([], () => r(require('../views/games/game-counting-record.vue')), 'gameRecord')
+const SpringFestival = r => require.ensure([], () => r(require('../views/activity/springFestival.vue')), 'SpringFestival')
+const SpringRecord = r => require.ensure([], () => r(require('../views/activity/SpringRecord.vue')), 'SpringRecord')
+const FtLanding = r => require.ensure([], () => r(require('../views/ft-game/ftLanding.vue')), 'Fentian')
+const FtRegister = r => require.ensure([], () => r(require('../views/ft-game/FtRegister.vue')), 'Fentian')
+const FtSuccess = r => require.ensure([], () => r(require('../views/ft-game/FtSuccess.vue')), 'Fentian')
 Vue.use(Router)
 const routes = [
   {
@@ -264,6 +273,60 @@ const routes = [
     name: 'LotteryRecord',
     component: LotteryRecord,
     meta: {title: '我的奖励'}
+  },
+  {
+    path: '/games/game-counting-start',
+    name: 'gameStart',
+    component: gameStart,
+    meta: {title: '拼手速抢红包'}
+  },
+  {
+    path: '/games/game-counting/:gameType',
+    name: 'gameCounting',
+    component: gameCounting,
+    meta: {title: '拼手速抢红包'}
+  },
+  {
+    path: '/games/game-counting-record',
+    name: 'gameRecord',
+    component: gameRecord,
+    meta: {title: '拼手速抢红包'}
+  },
+  {
+    path: '/games/game-counting-over',
+    name: 'gameOver',
+    component: gameOver,
+    meta: {title: '拼手速抢红包'}
+  },
+  {
+    path: '/activity/spring-festival',
+    name: 'SpringFestival',
+    component: SpringFestival,
+    meta: {title: '新春红包'}
+  },
+  {
+    path: '/activity/Spring-record',
+    name: 'SpringRecord',
+    component: SpringRecord,
+    meta: {title: '查看详情'}
+  },
+  {
+    path: '/ft/landing',
+    name: 'FtLanding',
+    component: FtLanding,
+    meta: {title: '礼包兑换'}
+  },
+  {
+    path: '/ft/register',
+    name: 'FtRegister',
+    component: FtRegister,
+    meta: {title: '注册'}
+  },
+  {
+    path: '/ft/success',
+    name: 'FtSuccess',
+    component: FtSuccess,
+    meta: {title: '礼包兑换'}
   },
   {
     path: '/user-center/bankcard-limit',

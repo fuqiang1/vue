@@ -13,7 +13,7 @@
       </div>
       <div class="rebate-list">
         <ul v-show="showList">
-          <li v-for="item in inviteList">
+          <li v-for="item in inviteList" :key="item.index">
             <p class="ft-Arail">{{item.user.mobile}}</p>
             <p v-bind:class="{'ft-orange': item.investAmount > 0}">{{ item.investAmount <= 0 ? '未投资' : '已投资'}}</p>
           </li>

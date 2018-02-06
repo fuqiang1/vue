@@ -4,7 +4,7 @@
       <li class="titles">
         <div><p class="display-inb bank-names">支持银行</p><p class="display-inb limits">单笔/单日/单月</p></div>
       </li>
-      <li class="clearfix" v-for="(card, index) in bankLimit">
+      <li class="clearfix" v-for="(card) in bankLimit" :key="card.index">
         <div>
           <p class="display-inb bank-name"><img v-bind:src="card.bankCardImg" alt="">{{card.bankName}}</p>
           <p class="display-inb limit">{{card.singleLimit < 0 ? '不限': card.singleLimit % 10000 === 0 ? card.singleLimit / 10000 + 'w' : card.singleLimit}}/{{card.dayLimit < 0 ? '不限': card.dayLimit % 10000 === 0 ? card.dayLimit / 10000 + 'w' : card.dayLimit}}/{{card.monthLimit < 0 ? '不限': card.monthLimit % 10000 === 0 ? card.monthLimit / 10000 + 'w' : card.monthLimit}}</p>

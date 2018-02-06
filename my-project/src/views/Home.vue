@@ -63,7 +63,7 @@
       {{year}}年-{{lastMonth}}月-1日 -- {{year}}年-{{lastMonth}}月-{{lastDate}}日
       <div class="hot_box">
         <div class="hot-son">
-          <div class="hot-son-inner" v-for="area in areaList" @click="toAreaDetail(area.country)">
+          <div class="hot-son-inner" v-for="area in areaList" :key="area.name" @click="toAreaDetail(area.country)">
             <img :src="'../../static/images/' + area.country + '.png'" width="100%" height="100%">
             <span class="shade" :style="'background-color: ' + area.color + ';'"></span>
             <p>{{area.name}}</p>

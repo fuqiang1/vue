@@ -31,7 +31,7 @@
       </div>
       <div class="courtesy2-content comm-bg">
         <ul class="courtesy2-card">
-          <li v-for="card in Member">
+          <li v-for="card in Member" :key="card.index">
             <div class="card">
               <p class="card-limit">首笔投资满{{card.minInvestAmount}}元</p>
             </div>

@@ -34,7 +34,7 @@
           第一道大礼
         </p>
         <ul>
-          <li v-for="coupon in cashCoupons">
+          <li v-for="coupon in cashCoupons" :key="coupon.index">
             <p class="coupon-left">现金券</p>
             <div class="coupon-right">
               <p class="value"><span>¥</span>{{coupon.value}}</p>
@@ -65,7 +65,7 @@
           </div>
           <div class="crab-list">
             <ul>
-              <li v-for="(crab, index) in crabs" v-bind:class="{'border-none' : index === 2}">
+              <li v-for="(crab, index) in crabs" :key="crab.index" v-bind:class="{'border-none' : index === 2}">
                 <p><img src="../../images/golden-fall/crab2.png" alt="" width="18%">{{crab.integral}}积分</p>
                 <p>公蟹{{crab.count1}}两/只</p>
                 <p>母蟹{{crab.count2}}两/只</p>

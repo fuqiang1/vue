@@ -3,13 +3,13 @@
     <!-- 问卷 -->
     <form name="questionnaireForm" >
     <!-- 问题及答案 -->
-      <div class="question" v-for="question in questions">
+      <div class="question" v-for="question in questions" :key="question.index">
         <div class="title overflow-hid clearfix ft-444">
           <span class="no fl">{{question.id}}</span>
           <span class="content fl">{{question.title || '您的年龄是：'}}</span>
         </div>
         <div class="answers">
-          <div class="answer overflow-hid clearfix" v-for="answer in question.answers" @click="select($event, question.id, answer.id)">
+          <div class="answer overflow-hid clearfix" v-for="answer in question.answers" :key="answer.index" @click="select($event, question.id, answer.id)">
             <span class="fl"></span><label class="fl" >{{ answer.answer || '30岁以下' }}</label>
           </div>
         </div>

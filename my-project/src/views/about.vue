@@ -2,7 +2,7 @@
   <div class="about">
     <div class="bg-White overflow-hid">
       <ul class="about-tab1 columns ten offset-by-one aboutorange clearfix">
-        <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" @click="switchTab(index)">{{tab}}</li>
+        <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" :key="tab.index" @click="switchTab(index)">{{tab}}</li>
       </ul>
     </div>
   <!-- 要展示的内容如下 -->

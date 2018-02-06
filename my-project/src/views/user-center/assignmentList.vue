@@ -6,7 +6,7 @@
       <li>转让时间</li>
     </ul>
     <ul class="list" v-show="showOrder">
-      <li v-for="order in assignmentOrder">
+      <li v-for="order in assignmentOrder" :key="order.index">
         <span>{{order.userName}}</span>
         <span>{{order.orderAmount}}</span>
         <span>{{order.createTime | date}}</span>

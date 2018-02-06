@@ -118,5 +118,19 @@
       "name": "新西兰",
       "color": "#789d22"
     }
-  ]
+  ],
+  "levelStatus": [1, 0, 0],
+  "activityInfo":{
+    "type": "41",
+    "statrtTime": 1516636800000,
+    "endTime": 1526795380000,
+    "status": 1
+  },
+  "newInvestmentAmount": {
+    "newInvestmentAmount": 20000
+  },
+  "takeReward": {
+    "status": "success",
+    "cdkey": "xhdglkj242jdghh"
+  }
 }

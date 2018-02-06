@@ -62,7 +62,7 @@
       <div id="detail-tabs" class="detail-tabs-wrapper">
         <div class="tabs sum-4">
           <div class="clearfix">
-            <div class="tab" v-for="(tab, index) in detailTabs" :class="{active: activeTab == index}" @click="toggleTab(index)">
+            <div class="tab" v-for="(tab, index) in detailTabs" :key="tab.index" :class="{active: activeTab == index}" @click="toggleTab(index)">
               <p>{{tab}}</p>
             </div>
           </div>
@@ -116,13 +116,13 @@
             <div class="project-brief">
               <div class="content">
                 <ul class="license-list clearfix">
-                  <li class="license-item" v-if="categoryCode !== '0115'" v-for="(contract, index) in contractThumbnailFileList" @click="preview(index, $event, contractOriginalFileList)">
+                  <li class="license-item" v-if="categoryCode !== '0115'" v-for="(contract, index) in contractThumbnailFileList" :key="contract.index" @click="preview(index, $event, contractOriginalFileList)">
                     <img v-bind:src="baseFileUrl + contract.uploadFile.url" width="100%" height="100%">
                   </li>
-                  <li class="license-item" v-if="categoryCode !=='0112' && categoryCode !== '0115' && categoryCode !== '0116'" @click="preview(index, $event, enterpriseOriginalFileList)" v-for="(enterPrise, index) in enterpriseThumbnailFileList">
+                  <li class="license-item" v-if="categoryCode !=='0112' && categoryCode !== '0115' && categoryCode !== '0116'" :key="enterPrise.index" @click="preview(index, $event, enterpriseOriginalFileList)" v-for="(enterPrise, index) in enterpriseThumbnailFileList">
                     <img v-bind:src="baseFileUrl + enterPrise.uploadFile.url" width="100%" height="100%">
                   </li>
-                  <li class="license-item" v-if="projectThumbnailFileList.length > 0" @click="preview(index, $event, projectOriginalFileList)" v-for="(project, index) in projectThumbnailFileList">
+                  <li class="license-item" v-if="projectThumbnailFileList.length > 0" @click="preview(index, $event, projectOriginalFileList)" v-for="(project, index) in projectThumbnailFileList" :key="project.index">
                     <img v-bind:src="baseFileUrl + project.uploadFile.url" width="100%" height="100%">
                   </li>
                 </ul>
@@ -159,7 +159,7 @@
             </div>
           </div>
           <div v-if="activeTab === 3" class="repayment-plan bg-white">
-            <div class="each-line" v-for="(preRepayment, index) in preRepaymentList">
+            <div class="each-line" v-for="(preRepayment) in preRepaymentList" :key="preRepayment.index">
               <div class="column1"><span :class="{'ed': preRepayment.status === 1}">预计</span>{{preRepayment.repaymentTime | date}}</div>
               <div class="column2">
                 <span class="circle" :class="{'ed': preRepayment && preRepayment.status === 1 }"></span>

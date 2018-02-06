@@ -2,7 +2,7 @@
   <div class="about">
     <div class="bg-White overflow-hid tab">
       <ul class="about-tab1 columns ten offset-by-one aboutorange clearfix">
-        <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" @click="switchTab(index)">{{tab.tab}}</li>
+        <li class="column text-center ft-1p4" :class="{active: activeTab == index}" v-for="(tab, index) in tabs" :key="tab.index" @click="switchTab(index)">{{tab.tab}}</li>
       </ul>
     </div>
     <div class="class1" v-if="activeTab === headImgs[activeTab].index">

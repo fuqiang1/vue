@@ -30,7 +30,21 @@ var goods = appData.goods
 var ratings = appData.ratings
 var areas = appData.areas
 var apiRoutes = express.Router()
+var newInvestmentAmount = appData.newInvestmentAmount//获取对应的本地数据
+var takeReward = appData.takeReward
 app.use('/api', apiRoutes)
+app.get('/api/newInvestmentAmount', (req, res) => {
+  res.json({
+    errno: 0,
+    data: newInvestmentAmount
+  })//接口返回json数据，上面配置的数据newInvestmentAmount就赋值给data请求后调用
+}),
+app.post('/api/takeReward', function (req, res) { // 注意这里改为post就可以了
+  res.json({
+    errno: 0,
+    data: takeReward
+  });
+})
 // 模仿接口配置本地json数据
 app.get('/api/seller', (req, res) => {
   res.json({

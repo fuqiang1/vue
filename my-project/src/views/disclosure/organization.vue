@@ -5,7 +5,7 @@
       <img src="../../images/disclosure/organization-01.png" alt="" class="bsuiness-title">
       <table class="info">
         <div>
-          <tr v-for="(info, index) in businessInfo" v-bind:class="{'border-none': index === businessInfo.length-1}">
+          <tr v-for="(info, index) in businessInfo" v-bind:class="{'border-none': index === businessInfo.length-1}" :key="info.index">
             <td>{{info.name}}</td> 
             <td>{{info.content}}</td>
           </tr>

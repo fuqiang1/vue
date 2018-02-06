@@ -18,12 +18,12 @@ body.modal-open{
   margin: 0;
 }
 div, a, p, img, span, ul, li {
-  -webkit-user-select: none;
   -moz-user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  user-select:none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .normal-mid {
   max-width: 640px;

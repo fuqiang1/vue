@@ -16,14 +16,14 @@
       <img src="../../images/summer-plan/gwbt.png" alt="" width="60%">
     </div>
     <ul class="cashCoupons">
-      <li v-for="cashCoupon in cashCoupons">
+      <li v-for="cashCoupon in cashCoupons" :key="cashCoupon.index">
         <div class="amount">
           <span>元</span>
           <img v-bind:src="cashCoupon.imgSrc" alt="" v-bind:style="{ width: cashCoupon.imgWidth + '%' }"> 
         </div>
         <div class="conditions">
           <p>投资项目 &nbsp;&nbsp;&nbsp; {{cashCoupon.type === '5' ? '精选' : '尊贵'}}</p>
-          <p>起投金额 &nbsp;&nbsp;&nbsp; {{cashCoupon.minInvestAmount/1000 <10 ? cashCoupon.minInvestAmount/1000 +' 千' : cashCoupon.minInvestAmount/10000 >=1 ? cashCoupon.minInvestAmount/10000 +' 万' : ''}}</p>
+          <p>起投金额 &nbsp;&nbsp;&nbsp; {{cashCoupon.minInvestAmount / 1000 < 10 ? cashCoupon.minInvestAmount/1000 +' 千' : cashCoupon.minInvestAmount/10000 >=1 ? cashCoupon.minInvestAmount/10000 +' 万' : ''}}</p>
         </div>
         <div class="getCoupon" @click="getCoolCoupons(cashCoupon.level)" :disabled="busy">点击领取</div>
       </li>

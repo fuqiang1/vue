@@ -4,7 +4,7 @@
       <div class="lottery-list-header">(最近两周内)</div>
       <!-- prizeType：1, "当日加息"" ; 2, "现金奖励 ; 3, "加息券 ; 4, "现金券" ; 5, "特权本金" -->
       <ul v-show="showRecord">
-        <li v-for="record in userLotteryRecord " class="text-left">
+        <li v-for="record in userLotteryRecord " :key="record.index" class="text-left">
           <span v-if="record.prizeType === 1"><img src="../../images/lottery/one-day-rate-icon.png" width="100%"></span>
           <span v-if="record.prizeType === 2"><img src="../../images/lottery/cash-icon.png" width="100%"></span>
           <span v-if="record.prizeType === 3"><img src="../../images/lottery/rate-coupon-icon.png" width="100%"></span>

@@ -54,7 +54,7 @@
           <img src="../../images/lottery/title-lucky-users.png" alt="" width="48%">
           <div class="lucky-users-wrap">
             <ul class="lucky-users-box margin-b-0">
-              <li class="text-justify" v-for="item in luckyUsers"><span>恭喜{{item.mobile}}</span>{{item.prizeName}}</li>
+              <li class="text-justify" v-for="item in luckyUsers" :key="item.index"><span>恭喜{{item.mobile}}</span>{{item.prizeName}}</li>
             </ul>
           </div>
           <p class="text-center state" v-show="isiOS">该活动与设备生产商Apple Inc.公司无关</p>

@@ -25,7 +25,7 @@
                 <td class="bd-bottom">剩余获得天数(天)</td>
               </tr>
             </thead>
-            <tbody class="" v-for="detail in details" v-if="details.length > 0">
+            <tbody class="" v-for="detail in details" :key="detail.index" v-if="details.length > 0">
               <tr v-if="detail.firstInvestTime > 0">
                 <td v-bind:class="{'color_grey' : getintervalDays(detail.firstInvestTime) <= 0}" class="bd-right bd-bottom">{{detail.mobile}}</td>
                 <td v-bind:class="{'color_grey' : getintervalDays(detail.firstInvestTime) <= 0}" class="bd-right bd-bottom">{{detail.amount | number}}</td>

@@ -22,7 +22,7 @@
       <div class="good-projects">
         <img src="../../images/register/good-project.png" alt="" width="65%">
         <ul class="projects">
-          <li v-for="item in projects">
+          <li v-for="item in projects" :key="item.index">
             <p class="rate-txt">预计年化收益率</p>
             <p class="rate-num">{{item.rate || 8}}%</p>
             <p class="date">投资期限：{{item.date || 55}}天</p>
