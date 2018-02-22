@@ -26,7 +26,7 @@
 </script>
 <style scoped>
   .taiguo {
-    background-color:red;
+    background-color:#f5ff;
   }
   .item2 {
     background-color: forestgreen;

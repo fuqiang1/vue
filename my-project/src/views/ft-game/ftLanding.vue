@@ -9,51 +9,115 @@
       <div class="position-re carousel-mask">
         <div id="wrapper">
           <ul class="poster-list">
-            <li v-for="(item, index) in gifts" :key="index">
+            <!-- 初级 -->
+            <li>
               <span class="circle"></span>
-              <img :src="'../../../static/images/level' + index + '.png'" alt="" class="display-bl name" width="32%">
-              <div class="flag"><p>价值<span>RMB{{item.value}}</span></p></div>
+              <img src="../../images/fentian/level1.png" alt="" class="display-bl name" width="32%">
+              <div class="flag"><p>价值<span>RMB410</span></p></div>
               <div class="box1">
                 <div class="box-son">
                   <div class="position-re">
-                    <p class="position-ab num"><span>x{{item.num1}}</span></p>
-                    <img :src="'../../../static/images/gift' + index + '-1.png'" alt="" class="display-bl margin-auto" :width="item.imgWidth">
+                    <p class="position-ab num"><span>x1</span></p>
+                    <img src="../../images/fentian/gift0-1.png" alt="" class="display-bl margin-auto" width="80%">
                   </div>
                   <div class="position-re">
-                    <p class="position-ab num"><span>x{{item.num2}}</span></p>
-                    <img :src="'../../../static/images/gift' + index + '-2.png'" alt="" class="display-bl margin-auto" :width="item.imgWidth">
+                    <p class="position-ab num"><span>x1</span></p>
+                    <img src="../../images/fentian/gift0-2.png" alt="" class="display-bl margin-auto" width="80%">
                   </div>
                   <div class="position-re">
-                    <p class="position-ab num"><span>x{{item.num3}}</span></p>
-                    <img :src="'../../../static/images/gift' + index + '-3.png'" alt="" class="display-bl margin-auto" :width="item.imgWidth">
-                  </div>
-                  <div class="position-re" v-if="item.num4">
-                    <p class="position-ab num"><span>x{{item.num4}}</span></p>
-                    <img :src="'../../../static/images/gift' + index + '-4.png'" alt="" class="display-bl margin-auto" :width="item.imgWidth">
+                    <p class="position-ab num"><span>x2</span></p>
+                    <img src="../../images/fentian/gift0-3.png" alt="" class="display-bl margin-auto" width="75%">
                   </div>
                 </div>
-                <div class="box-son" v-if="index === 0">
+                <div class="box-son">
                   <p class="gift-name">【时装兑换令牌】</p>
-                  <p class="gift-name">【神器印记礼包】</p>
+                  <p class="gift-name">【圣器印记礼包】</p>
                   <p class="gift-name">【魔气结晶】</p>
                 </div>
-                <div class="box-son" v-if="index === 1">
+              </div>
+              <p class="text" v-if="!cdkey0">您已获得价值<span>RMB410</span>游戏礼包领取资格，通过银行存管认证后，即可获取礼包兑换码，数量有限，兑完即止哟～</p>
+              <div class="gongxi" v-if="cdkey0">
+                <p>恭喜您获得焚天【初级礼包】！</p>
+                <p>奖励兑换码为</p>
+                <p>{{cdkey0}}</p>
+              </div>
+              <p class="take-btn" @click="copyCdkey(cdkey0, 0)">复制兑换码</p>
+              <p class="take-btn" v-if="!cdkey0" @click="toTakeCdkey(0)">立即抢领</p>
+            </li>
+            <!-- 中级 -->
+            <li>
+              <span class="circle"></span>
+              <img src="../../images/fentian/level2.png" alt="" class="display-bl name" width="32%">
+              <div class="flag"><p>价值<span>RMB1000</span></p></div>
+              <div class="box1">
+                <div class="box-son">
+                  <div class="position-re">
+                    <p class="position-ab num" v-bind:class="{'invalid-num': !cdkey1 && Invalid}"><span>x3</span></p>
+                    <img src="../../images/fentian/gift1-1.png" alt="" class="display-bl margin-auto" width="80%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num" v-bind:class="{'invalid-num': !cdkey1 && Invalid}"><span>x1</span></p>
+                    <img src="../../images/fentian/gift1-2.png" alt="" class="display-bl margin-auto" width="80%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num" v-bind:class="{'invalid-num': !cdkey1 && Invalid}"><span>x1</span></p>
+                    <img src="../../images/fentian/gift1-3.png" alt="" class="display-bl margin-auto" width="86%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num" v-bind:class="{'invalid-num': !cdkey1 && Invalid}"><span>x1</span></p>
+                    <img src="../../images/fentian/gift1-4.png" alt="" class="display-bl margin-auto" width="80%">
+                  </div>
+                </div>
+                <div class="box-son">
                   <p class="gift-name">【典籍经典宝箱】&nbsp;&nbsp;【金宠随机包】<br>【随机神能宝箱】&nbsp;&nbsp;【坐骑兑换缰绳】</p>
                 </div>
-                <div class="box-son" v-if="index === 2">
+              </div>
+              <p class="text" v-if="!cdkey1">首投任意金额(不含债权转让类项目)即可获取价值<span>RMB1000</span>游戏礼包</p>
+              <div class="gongxi" v-if="cdkey1">
+                <p>恭喜您获得焚天【中级礼包】！</p>
+                <p>奖励兑换码为</p>
+                <p>{{cdkey1}}</p>
+              </div>
+              <p class="take-btn" v-if="cdkey1" @click="copyCdkey(cdkey1, 1)">复制兑换码</p>
+              <p class="take-btn" v-if="!cdkey1 && !Invalid" @click="toTakeCdkey(1)">立即抢领</p>
+              <p class="invalid-btn" v-if="!cdkey1 && Invalid">礼包已失效</p>
+            </li>
+            <!-- 高级 -->
+            <li>
+              <span class="circle"></span>
+              <img src="../../images/fentian/level3.png" alt="" class="display-bl name" width="32%">
+              <div class="flag"><p>价值<span>RMB2500</span></p></div>
+              <div class="box1">
+                <div class="box-son">
+                  <div class="position-re">
+                    <p class="position-ab num"><span>x1</span></p>
+                    <img src="../../images/fentian/gift2-1.png" alt="" class="display-bl margin-auto" width="86%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num"><span>x5</span></p>
+                    <img src="../../images/fentian/gift2-2.png" alt="" class="display-bl margin-auto" width="75%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num"><span>x2</span></p>
+                    <img src="../../images/fentian/gift2-3.png" alt="" class="display-bl margin-auto" width="80%">
+                  </div>
+                  <div class="position-re">
+                    <p class="position-ab num"><span>x2</span></p>
+                    <img src="../../images/fentian/gift0-2.png" alt="" class="display-bl margin-auto" width="86%">
+                  </div>
+                </div>
+                <div class="box-son">
                     <p class="gift-name">【9级宝石】&nbsp;&nbsp;【高级天机卷】<br>【金钥匙】&nbsp;&nbsp;&nbsp;&nbsp;【神器印记礼包】</p>
                 </div>
               </div>
-              <p class="text" v-if="index === 0 && (!userAuth.active || userAuth.authStatus !== 2 )">您已获得价值<span>RMB{{item.value}}</span>游戏礼包领取资格，通过银行存管认证后，即可获取礼包兑换码，数量有限，兑完即止哟～</p>
-              <p class="text" v-if="index === 1 && newInvestmentAmount === 0">首投任意金额(不含债权转让类项目)即可获取价值<span>RMB{{item.value}}</span>游戏礼包</p>
-              <p class="text" v-if="index === 2 && newInvestmentAmount < 5000">活动期间，累计投资金额满5000元 (不含债权转让类项目)即可获取价值<span>RMB{{item.value}}</span>游戏礼包</p>
-              <div class="gongxi" v-if="index === 0 && userAuth.active && userAuth.authStatus === 2 || index === 2 && newInvestmentAmount >= 5000 || index === 1 && newInvestmentAmount > 0">
-                <p>恭喜您获得焚天{{item.giftName}}！</p>
+              <p class="text" v-if="!cdkey2">活动期间，累计投资金额满5000元 (不含债权转让类项目)即可获取价值<span>RMB2500</span>游戏礼包</p>
+              <div class="gongxi" v-if="cdkey2">
+                <p>恭喜您获得焚天【高级礼包】！</p>
                 <p>奖励兑换码为</p>
-                <p class="cdKey">{{item.cdkey}}</p>
+                <p>{{cdkey2}}</p>
               </div>
-              <p class="take-btn" v-if="index === 0 && userAuth.active && userAuth.authStatus === 2 || index === 2 && newInvestmentAmount >= 5000 || index === 1 && newInvestmentAmount > 0" @click="copyCdkey(item.cdkey)">复制兑换码</p>
-              <p class="take-btn" v-if="!(index === 0 && userAuth.active && userAuth.authStatus === 2 || index === 2 && newInvestmentAmount >= 5000 || index === 1 && newInvestmentAmount > 0)" @click="toTakeCdkey()">立即抢领</p>
+              <p class="take-btn" v-if="cdkey2" @click="copyCdkey(cdkey2, 2)">复制兑换码</p>
+              <p class="take-btn" v-if="!cdkey2" @click="toTakeCdkey(2)">立即抢领</p>
             </li>
           </ul>
         </div>
@@ -80,16 +144,19 @@
 <script>
   import {Carousel} from '../../service/mCarousel'
   import {Utils, bridgeUtil} from '../../service/Utils'
-  // import $ from 'zepto'
   export default {
     data () {
       return {
+        Invalid: false,
+        cdkey0: 0,
+        cdkey1: 0,
+        cdkey2: 0,
         isIos: Utils.isIos(),
+        index: 0, //
         userAuth: {
           active: Boolean,
           authStatus: Number
         },
-        newInvestmentAmount: 5000, // 用户活动期间累计投资额
         activityInfo: {
           startYear: 2018,
           startMonth: 1,
@@ -97,61 +164,38 @@
           endYear: 2018,
           endMonth: 1,
           endDate: 1
-        },
-        status1: 0,
-        status2: 0,
-        status3: 0,
-        gifts: [
-          {
-            value: 410,
-            status: 1,
-            giftName: '初级礼包',
-            num1: 1,
-            num2: 1,
-            num3: 2,
-            imgWidth: '80%',
-            cdkey: 'xfhjlokpamxipamlznd1'
-          },
-          {
-            value: 1000,
-            status: 1,
-            giftName: '中级礼包',
-            num1: 3,
-            num2: 1,
-            num3: 1,
-            num4: 1,
-            imgWidth: '86%',
-            cdkey: 'xfhjlokpamxipamlznd2'
-          },
-          {
-            value: 2500,
-            status: 0,
-            giftName: '高级礼包',
-            num1: 1,
-            num2: 5,
-            num3: 2,
-            num4: 2,
-            imgWidth: '86%',
-            cdkey: 'xfhjlokpamxipamlznd3'
-          }
-        ]
+        }
       }
     },
     props: ['token'],
+    watch: {
+      token: function (val) {
+        val ? this.getCdkeys(0) : null
+        val ? this.getCdkeys(1) : null
+        val ? this.getCdkeys(2) : null
+        val ? this.getFirstInvest() : null
+      }
+    },
     created () {
-      this.getUserAuth()
-      this.getUserInvestAmount()
       this.getActivityStatus()
-      this.getLevelStatus()
+      this.token ? this.getCdkeys(0) : null
+      this.token ? this.getCdkeys(1) : null
+      this.token ? this.getCdkeys(2) : null
+      this.token ? this.getFirstInvest() : null
     },
     mounted () {
       this.setCarousel()
     },
     methods: {
+      getFirstInvest () {
+        var that = this
+        that.$http('/hongcai/rest/users/0/creditRights/firstInvest?token=' + that.token).then(function (res) {
+          (res.data && res.data.type === 6) ? that.Invalid = true : that.Invalid = false
+        })
+      },
       getActivityStatus () { // 活动信息查询
         var that = this
         that.$http('/hongcai/rest/activitys/' + that.$route.query.act).then(function (res) {
-          that.activityStatus = res.data.status
           var startTime = res.data.startTime
           var endTime = res.data.endTime
           that.activityInfo = {
@@ -164,63 +208,45 @@
           }
         })
       },
-      getUserAuth: function () {
-        this.$http({
-          methods: 'get',
-          url: '/hongcai/rest/users/0/userAuth?token=' + this.token
-        }).then((response) => {
-          this.userAuth = response.data
-          if (!this.userAuth.active || this.userAuth.authStatus !== 2) {
-            return
-          }
-        })
-      },
-      getUserInvestAmount () {
-        this.$http.get('http://localhost:8888/api/newInvestmentAmount')
-        .then((res) => { // 活动期间累计投资额查询
-          this.newInvestmentAmount = res.data.data.newInvestmentAmount
-        })
-      },
-      getLevelStatus () { // 各等级领取状态查询
+      getCdkeys (type) { // 各等级领取cdkey查询
+        if (type === 0 && this.cdkey0 || type === 1 && this.cdkey1 || type === 2 && this.cdkey2) {
+          return
+        }
         var that = this
-        that.$http('/hongcai/rest/activitys/newYear/levelStatus?token=' + that.token)
+        that.$http('/hongcai/rest/activitys/fenTianCdkey?token=' + that.token + '&channelName=fentian' + '&cdKeyType=' + type)
         .then(function (res) {
-          if (!res || res.ret === -1) {
-            return
-          }
-          for (let i = 0; i < res.data.status.length; i++) {
-            that.gifts[i].status = res.data.status[i]
+          type === 0 ? that.cdkey0 = null : type === 1 ? that.cdkey1 = null : that.cdkey2 = null
+          if (res && res.data.ret !== -1) {
+            type === 0 ? that.cdkey0 = res.data.cdkey : null
+            type === 1 ? that.cdkey1 = res.data.cdkey : null
+            type === 2 ? that.cdkey2 = res.data.cdkey : null
           }
         })
       },
-      setCarousel () { // 红包布局配置
-        var that = this
+      setCarousel () { // 礼包布局配置
         var wrapper = document.getElementById('wrapper')
-        if (that.activityStatus !== 3) {
-          Carousel.mCarousel(wrapper, {
-            index: 0,
-            active: 'active',
-            scale: 0.67,
-            duration: 300,
-            locked: true,
-            diff: 0.445,
-            before: function () { // 动画执行中不可拆红包
-              that.canTake = false
-            },
-            after: function () {
-              that.canTake = true
-            }
-          })
-        }
+        Carousel.mCarousel(wrapper, {
+          index: 0,
+          active: 'active',
+          scale: 0.67,
+          duration: 300,
+          locked: true,
+          diff: 0.445
+        })
       },
-      toTakeCdkey () {
-        if (this.userAuth.active && this.userAuth.authStatus === 2) {
-          bridgeUtil.webConnectNative('HCNative_GoInvestList', null, {}, function (response) {}, null)
-        } else {
-          bridgeUtil.webConnectNative('HCNative_CheckUserAuth', null, {}, function (response) {}, null)
-        }
+      toTakeCdkey (type) {
+        if (type !== Carousel.index) { return }
+        this.$http.get('/hongcai/rest/users/0/userAuth?token=' + this.token).then((response) => {
+          this.userAuth = response.data
+          if (this.userAuth.active && this.userAuth.authStatus === 2) {
+            bridgeUtil.webConnectNative('HCNative_GoInvestList', null, {}, function (response) {}, null)
+          } else {
+            bridgeUtil.webConnectNative('HCNative_CheckUserAuth', null, {}, function (response) {}, null)
+          }
+        })
       },
-      copyCdkey (cdkey) {
+      copyCdkey (cdkey, type) {
+        if (type !== Carousel.index) { return }
         bridgeUtil.webConnectNative('HCNative_CopyText', null, {text: cdkey}, function (response) {}, null)
       }
     }
@@ -231,11 +257,6 @@
     overflow-x: hidden;
     background: #2a0d28;
     padding-bottom: .3rem;
-  }
-  #cdKey {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
   }
   .act-time {    
     top: 71%;
@@ -310,19 +331,17 @@
     height: 100%;
     color: #fff;
     font-size: .24rem;
-    /* background: url('../../images/spring-festival/hongbao-3-min.png') no-repeat center center; */
     background-size: contain;
   }
   li .gongxi p:first-child {
     color: #531e1d;
     font-size: .23rem;
-    margin: .1rem auto .15rem;
+    margin: .1rem auto .1rem;
   }
   li .gongxi p:first-child + p {
     color: #531e1d;
   }
   li .gongxi p:last-child {
-    margin-top: -.1rem;
     color: #ff0e00;
     font-size: .3rem;
   }
@@ -376,8 +395,10 @@
   li .text span {
     color: #fd2007;
   }
-  li .take-btn {
+  li .take-btn, li .invalid-btn {
     position: absolute;
+    display: block;
+    border:none;
     bottom: 5%;
     height: 1rem;
     width: 81%;
@@ -389,6 +410,11 @@
     font-size: .34rem;
 	  font-weight: bold;
 	  font-family: 'PingFang-SC';
+  }
+  li .invalid-btn {
+    background: url('../../images/fentian/invalid-btn.png') no-repeat center center;
+    background-size: 100%;
+    color: #6f6d6d;
   }
   .box1 {
     margin: 0 auto;
@@ -425,12 +451,16 @@
     margin-left: 0%;
     padding: 0.3rem 0.15rem 0.15rem;
   }
-  .box-son div p.num {
+  .box-son div p.num, .invalid-num {
     left: -2px;
     top: 0;
     width: 100%;
     height: .8rem;
     background: url('../../images/fentian/num.png') no-repeat 0 0;
+    background-size: contain;
+  }
+  .box-son div p.invalid-num {
+    background: url('../../images/fentian/invalid-num.png') no-repeat 0 0;
     background-size: contain;
   }
   .box-son div p.num span {

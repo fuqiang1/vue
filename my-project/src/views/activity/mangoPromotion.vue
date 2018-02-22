@@ -96,7 +96,7 @@
 </template>
 <script>
   import $ from 'zepto'
-  import {Utils, sendMobCaptcha, ModalHelper, InputMaskHelper, checkInputUtil} from '../../service/Utils'
+  import {Utils, sendMobCaptcha, ModalHelper, InputMaskHelper} from '../../service/Utils'
   export default {
     name: 'mgPromotion',
     data () {
@@ -106,7 +106,6 @@
         busy: false,
         actEnding: 1,
         isIos: Utils.isIos(),
-        inputUtil: checkInputUtil,
         scrollTop: 0,
         user: {
           registerSuccess: false,
