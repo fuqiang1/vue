@@ -159,12 +159,12 @@ div.input-focus, p.input-focus {
   float: right;
 }
 .clearfix::after, .clearfix::before {
-    content: ".";
-    height: 0;
-    line-height: 0;
-    display: block;
-    visibility: hidden;
-    clear: both;
+  content: ".";
+  height: 0;
+  line-height: 0;
+  display: block;
+  visibility: hidden;
+  clear: both;
 }
 .clearfix {
   clear: both;
@@ -237,30 +237,30 @@ div.input-focus, p.input-focus {
   margin-bottom: 0.3rem; 
 }
 .slide{
-    position: relative;
-    overflow: hidden;
-    margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
 }
 .slide:after{
-    content: '';
-    display: block;
-    width: 100%;
-    padding-top: 50%;
+  content: '';
+  display: block;
+  width: 100%;
+  padding-top: 50%;
 }
 .slide ul{
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 .slide li{
-    list-style: none;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+  list-style: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 /* 解决js阻塞页面显示首屏 */
 .slide li:first-child{

@@ -5,11 +5,12 @@ var utils = require('./utils')
 var config = require('../config')
 var vueLoaderConfig = require('./vue-loader.conf')
 var webpack = require("webpack")
+const vuxLoader = require('vux-loader')
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-module.exports = {
+let webpackConfig = {
   entry: {
     app: ['./src/main.js']
   },
@@ -21,7 +22,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json','.ts'],
+    extensions: ['.js', '.vue', '.json','.less'],
     modules: [
       resolve('src'),
       resolve('node_modules')
@@ -103,3 +104,4 @@ module.exports = {
     })
   ]
 }
+module.exports = vuxLoader.merge(webpackConfig, { plugins: ['vux-ui'] })

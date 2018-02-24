@@ -21,6 +21,8 @@
     <br>
     <br> -->
     <!-- 轮播banner图 -->
+    <!-- <loading :show="show1" :text="text1"></loading> -->
+    <!-- <alert v-model="show" :title="''">就是问问你吃没吃，没别的意思</alert> -->
     <div class="slide-banner position-re overflow-hid" >
       <div class="slide position-re" id="slideBanner">
         <ul>
@@ -58,9 +60,10 @@
       </div>
     </div>
     <div class="hot_area">
-      <p>热门国家或地区</p>
+      <p>作者：{{$store.state.author}},年龄：{{$store.state.age}}</p>
+      <button @click="$store.commit('changeName')">点击切换{{sex}}</button><br>
       <!-- 上个月第一天到最后一天 -->
-      {{year}}年-{{lastMonth}}月-1日 -- {{year}}年-{{lastMonth}}月-{{lastDate}}日
+      <p @click="change()">{{year}}年-{{lastMonth}}月-1日 -- {{year}}年-{{lastMonth}}月-{{lastDate}}日</p>
       <div class="hot_box">
         <div class="hot-son">
           <div class="hot-son-inner" v-for="area in areaList" :key="area.name" @click="toAreaDetail(area.country)">
@@ -79,6 +82,9 @@
   import $ from 'zepto'
   import footerDiv from 'components/footer'
   import {swiper} from '../service/swipeSlide'
+  import {Loading, Alert} from 'vux'
+  import store from '../vuex/store'
+  import {mapState, mapMutations, mapGetters} from 'vuex'
   export default {
     name: 'home',
     data () {
@@ -87,12 +93,23 @@
         areaList: [],
         lastMonth: new Date().getMonth(),
         lastDate: 30,
+        show1: true,
+        show: true,
+        text1: '加载中～',
         year: new Date().getFullYear()
       }
     },
+    computed: {
+      ...mapState(['sex', 'age']),
+      ...mapGetters(['age']),
+      age () {
+        return this.$store.getters.age
+      }
+    }, // computed属性可以在输出前，对data中的值进行改变，我们就利用这种特性把store.js中的state值赋值给我们模板中的data值。
     created () {
       this.getAreas()
       this.cacul()
+      console.log(mapMutations)
     },
     mounted () {
       swiper.init({
@@ -133,8 +150,9 @@
       }
     },
     components: {
-      footerDiv
-    }
+      footerDiv, Loading, Alert
+    },
+    store
   }
 </script>
 
