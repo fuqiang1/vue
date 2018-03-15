@@ -26,7 +26,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in CreditRightVo">
+                  <tr v-for="item in CreditRightVo" :key="item">
                     <td>{{item.createTime | monthDotDay}}</td>
                     <td>{{item.projectDays}}天</td>
                     <td>{{item.amount}}</td>
@@ -56,7 +56,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in PrivilegedCapitailDetail">
+                  <tr v-for="item in PrivilegedCapitailDetail" :key="item">
                     <td>{{item.createTime | monthDotDay}}</td>
                     <td>{{item.amount}}</td>
                   </tr>

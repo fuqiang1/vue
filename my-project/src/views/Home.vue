@@ -84,7 +84,7 @@
   import {swiper} from '../service/swipeSlide'
   import {Loading, Alert} from 'vux'
   import store from '../vuex/store'
-  import {mapState, mapMutations, mapGetters} from 'vuex'
+  import {mapState, mapGetters} from 'vuex'
   export default {
     name: 'home',
     data () {
@@ -109,7 +109,7 @@
     created () {
       this.getAreas()
       this.cacul()
-      console.log(mapMutations)
+      // console.log(mapMutations)
     },
     mounted () {
       swiper.init({
@@ -129,7 +129,6 @@
     methods: {
       getAreas () {
         this.$http.get('http://localhost:8888/api/areas').then((res) => {
-          console.log(res.data.data)
           this.areaList = res.data.data
         })
       },

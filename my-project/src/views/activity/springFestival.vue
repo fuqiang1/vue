@@ -1,5 +1,6 @@
 <template>
   <div class="SpringFestival">
+    token: {{token ? token : 'null'}}
     <div class="header">
       <img src="../../images/spring-festival/header-min_01.png" alt="" width="100%">
       <img src="../../images/spring-festival/header-min_02.png" alt="" width="100%">
@@ -54,7 +55,7 @@
         <div class="position-re carousel-mask" v-if="activityStatus === 1 || activityStatus === 2 && investAmount > 0">
           <div id="wrapper">
             <ul class="poster-list clearfix clear">
-              <li v-for="(item, index) in packetList">
+              <li v-for="(item, index) in packetList" :key="item">
                 <div class="red_bag_bg" :class="{'ed' : item.status === 1}">
                   <img src="../../images/spring-festival/wdb.png" width="40%" class="chai display-bl" alt="" v-if="investAmount < item.limitAmount && item.status === 0">
                   <img src="../../images/spring-festival/chai.png" width="40%" class="chai display-bl" alt="" v-if="investAmount >= item.limitAmount && item.status === 0" @click="takeReward(index + 1, levelStatus[index], item.amount)">
@@ -83,7 +84,7 @@
             <img src="../../images/spring-festival/lantern.png" alt="" class="num">
             <div class="content">
               活动时间 <br>
-              本次活动仅限于{{activityInfo.startYear}}年{{activityInfo.startMonth}}月{{activityInfo.startDate}}日至{{activityInfo.endYear}}年{{activityInfo.endMonth}}月{{activityInfo.endDate}}日内参与有效，活动期间，可随时拆红包领现金，如活动结束后3个工作日内仍未领取奖励，将视为自动放弃奖励；
+              本次活动仅限于{{new Date(activityInfo.startTime).getFullYear()}}年{{new Date(activityInfo.startTime).getMonth() + 1}}月{{new Date(activityInfo.startTime).getDate()}}日至{{new Date(activityInfo.endTime).getFullYear()}}年{{new Date(activityInfo.endTime).getMonth() + 1}}月{{new Date(activityInfo.endTime).getDate()}}日内参与有效，活动期间，可随时拆红包领现金，如活动结束后3个工作日内仍未领取奖励，将视为自动放弃奖励；
             </div>
           </div>
           <div class="rule">
@@ -554,6 +555,7 @@
   import {bridgeUtil, ModalHelper} from '../../service/Utils'
   import $ from 'zepto'
   import SpringCalculator from './SpringCalculator.vue'
+  import {mapActions, mapGetters} from 'vuex'
   export default {
     data () {
       return {
@@ -561,7 +563,6 @@
         shortAmount: 0, // 累计年化投资还差多少钱
         gettingRedPacket: 0, // 即可领取的红包金额
         totalPacket: 0, // 一共领取的红包金额
-        activityStatus: 1, // 1 正常 2 结束
         current: 0, // 当前显示的红包index
         canGetAmount: 0, // 年化金额达到可领取的红包数量
         canTakePackets: [], // 达标并且可以领的红包
@@ -625,20 +626,12 @@
         hammerTimer2: null,
         hammerTimer3: null,
         showCalculator: false,
-        activityInfo: {
-          startYear: 0,
-          startMonth: 0,
-          startDate: 0,
-          endYear: 0,
-          endMonth: 0,
-          endDate: 0
-        },
         canTake: true, // 红包切换过程中不可领取
         busy: false, // 防止多次点击领取
         serverTime: new Date().getTime()
       }
     },
-    props: ['token'],
+    // props: ['token'],
     watch: {
       token: function (val) {
         val ? this.getLevelStatus() : null
@@ -649,37 +642,31 @@
       }
     },
     created () {
-      this.getActivityStatus()
+      this.getToken()
       this.token ? this.getLevelStatus() : null
+      this.getActivityInfo(this.$route.query.act)
+      console.log(this.activityInfo)
+    },
+    computed: {
+      ...mapGetters([
+        'activityInfo',
+        'token'
+      ]),
+      activityStatus () {
+        let s = 1
+        if (new Date().getTime() - this.activityInfo.endTime > 3 * 24 * 60 * 60 * 1000) {
+          s = 3 // 活动结束3天后
+        } else {
+          s = this.activityInfo.status
+        }
+        return s
+      }
     },
     methods: {
-      getActivityStatus () { // 活动信息查询
-        var that = this
-        that.$http({ // 获取服务器时间
-          method: 'get',
-          url: '/hongcai/rest/systems/serverTime'
-        }).then((response) => {
-          that.serverTime = response.data.time
-          that.$http('/hongcai/rest/activitys/' + that.$route.query.act).then(function (res) {
-            if (that.serverTime - res.data.endTime > 3 * 24 * 60 * 60 * 1000) {
-              that.activityStatus = 3 // 活动结束3天后
-            } else {
-              that.activityStatus = res.data.status
-            }
-            // 获取活动开始、结束时间
-            var startTime = res.data.startTime
-            var endTime = res.data.endTime
-            that.activityInfo = {
-              startYear: new Date(startTime).getFullYear(),
-              startMonth: new Date(startTime).getMonth() + 1,
-              startDate: new Date(startTime).getDate(),
-              endYear: new Date(endTime).getFullYear(),
-              endMonth: new Date(endTime).getMonth() + 1,
-              endDate: new Date(endTime).getDate()
-            }
-          })
-        })
-      },
+      ...mapActions([
+        'getActivityInfo',
+        'getToken'
+      ]),
       setCarousel (current) { // 红包布局配置
         var that = this
         var wrapper = document.getElementById('wrapper')
