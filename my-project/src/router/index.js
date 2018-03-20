@@ -75,6 +75,7 @@ const SpringRecord = r => require.ensure([], () => r(require('../views/activity/
 const FtLanding = r => require.ensure([], () => r(require('../views/ft-game/ftLanding.vue')), 'Fentian')
 const FtRegister = r => require.ensure([], () => r(require('../views/ft-game/FtRegister.vue')), 'Fentian')
 const FtSuccess = r => require.ensure([], () => r(require('../views/ft-game/FtSuccess.vue')), 'Fentian')
+const ArborDay = r => require.ensure([], () => r(require('../views/activity/ArborDay.vue')), 'ArborDay')
 Vue.use(Router)
 const routes = [
   {
@@ -218,7 +219,8 @@ const routes = [
   {
     path: '/user-center/help/:type',
     name: 'Help',
-    component: Help
+    component: Help,
+    meta: {title: 'help center'}
   },
   {
     path: '/user-center/questionnaire',
@@ -247,7 +249,8 @@ const routes = [
   {
     path: '/project/:number',
     name: 'ProjectDetail',
-    component: ProjectDetail
+    component: ProjectDetail,
+    meta: {title: 'fuqiang'}
   },
   {
     path: '/activity/invite',
@@ -406,6 +409,12 @@ const routes = [
     meta: {title: '三周年狂欢'}
   },
   {
+    path: '/activity/arborday',
+    name: 'ArborDay',
+    component: ArborDay,
+    meta: {title: '植树节'}
+  },
+  {
     path: '/register-agree',
     name: 'RegisterAgree',
     component: RegisterAgree,
@@ -487,7 +496,8 @@ const routes = [
   {
     path: '/activity/register',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta: {title: '注册'}
   },
   // {
   //   path: '/activity/register-success',
@@ -511,7 +521,8 @@ const routes = [
   },
   {
     path: '*',
-    redirect: {name: 'Test'}
+    redirect: {name: 'Test'},
+    meta: {title: 'fuqiang'}
   }
 ]
 const router = new Router({
@@ -521,11 +532,7 @@ const router = new Router({
   routes // （缩写）相当于 routes: routes
 })
 router.beforeEach((to, from, next) => {
-  if (to.meta.title === undefined) {
-    document.title = 'fuqiang'
-  } else {
-    document.title = to.meta.title
-  }
+  document.title = to.meta.title ? to.meta.title : 'fuqiang'
   next()
 })
 export default router

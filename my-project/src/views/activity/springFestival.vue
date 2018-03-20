@@ -645,7 +645,6 @@
       this.getToken()
       this.token ? this.getLevelStatus() : null
       this.getActivityInfo(this.$route.query.act)
-      console.log(this.activityInfo)
     },
     computed: {
       ...mapGetters([
