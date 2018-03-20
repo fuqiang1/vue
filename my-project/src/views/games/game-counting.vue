@@ -157,227 +157,227 @@
         }
       }
     },
-    mounted () {
-      this.gameType = Number(this.$route.params.gameType)
-      var createjs = window.create || createjs
-      var that = this;
-      var l = null,
-      d,
-      f = null,
-      g = null,
-      e = null,
-      h = null;
-      that.qipaStage.stage = null
-      that.qipaStage.queue = null
-      that.qipaStage.init = function(c, isOnceAgain) {
-        if(isOnceAgain) {
-          that.drawScrollMoney()
-          that.backgroundTimer = setInterval(setBackground, 1E3);
-          that.qipaStage.stage.removeChild(that.qipaStage.stage.player)
-          that.qipaStage.stage.player = new drawMoney(that.HandList[0])
-          that.qipaStage.stage.addChild(that.qipaStage.stage.player)
-          return
-        }
+    // mounted () {
+    //   this.gameType = Number(this.$route.params.gameType)
+    //   var createjs = window.create || createjs
+    //   var that = this;
+    //   var l = null,
+    //   d,
+    //   f = null,
+    //   g = null,
+    //   e = null,
+    //   h = null;
+    //   that.qipaStage.stage = null
+    //   that.qipaStage.queue = null
+    //   that.qipaStage.init = function(c, isOnceAgain) {
+    //     if(isOnceAgain) {
+    //       that.drawScrollMoney()
+    //       that.backgroundTimer = setInterval(setBackground, 1E3);
+    //       that.qipaStage.stage.removeChild(that.qipaStage.stage.player)
+    //       that.qipaStage.stage.player = new drawMoney(that.HandList[0])
+    //       that.qipaStage.stage.addChild(that.qipaStage.stage.player)
+    //       return
+    //     }
 
-        function qp_w() {
-          var a = new createjs.Shape;
-          a.graphics.beginFill("#fbdc34").drawRect(0, 0, that.W, that.H);
-          that.qipaStage.stage.addChild(a);
-          var b = new createjs.Shape;
-          b.graphics.beginFill("white").rect(0, 200, that.W, that.H);
-          a.hitArea = b;
-          var c = 0,
-          d = 0;
-          a.on("mousedown", function(a) {
-            if (that.second <= 0) {
-              return
-            }
-            c = a.localY;
-            d = that.qipaStage.stage.player.m[qp_f].y;
-            that.qipaStage.stage.removeChild(that.qipaStage.stage.player)
-            that.qipaStage.stage.player = new drawMoney(that.HandList[that.countNum])
-            that.qipaStage.stage.addChild(that.qipaStage.stage.player)
-          });
-          a.on("pressmove", function(e) {
-            if (that.second <= 0 || c - e.localY <= 0) {
-              return
-            }
-             if (1 == that.gameStatus) {
-                that.gameStatus = 2
-             }
-             if (2 == that.gameStatus) {
-              that.qipaStage.stage.player.m[qp_f].visible = !0;
-              if (!that.qipaStage.stage.player.m[qp_f].y) {
-                that.qipaStage.stage.player.m[qp_f].y = 220;
-              }
-              that.qipaStage.stage.player.m[qp_f].y += (e.localY - c) / 1.5
-             }
-          });
-          var f = 0;
-          a.on("pressup", function(a) {
-            if (that.second <= 0) {
-              return
-            }
-            if (50 < c - a.localY) {
-              a = (new Date).getTime()
-              if (0 < qp_i.length && qp_i[qp_i.length - 1] + 50 > a) {
-              } else {
-                f = qp_y(a)
-                if (f <= 20) {
-                  that.rewardMoney += that.HandList[that.countNum]
-                  that.countNum++
-                  that.qipaStage.stage.player.playAnimation(that.qipaStage.stage.player.m[qp_f])
-                  audioPlayUtil.playOrPaused('count', that.isPlay)
-                } else {
-                  qp_i.length--
-                }
-              }
-            } else {
-              qp_z(d)
-              that.qipaStage.stage.player.m[qp_f].visible = !1
-            }
-          });
-          that.drawScrollMoney()
-          that.backgroundTimer = setInterval(setBackground, 1E3);
-          that.qipaStage.stage.player = new drawMoney(that.HandList[0])
-          that.qipaStage.stage.addChild(that.qipaStage.stage.player)
-        }
-        that.qipaStage.stage = new createjs.Stage("stage");
-        that.qipaStage.queue = new createjs.LoadQueue(!1);
-        that.qipaStage.queue.setMaxConnections(30);
-        if (that.IS_TOUCH = createjs.Touch.isSupported()) {
-          createjs.Touch.enable(that.qipaStage.stage, !0);
-          that.qipaStage.stage.mouseEnabled = !1;
-          var c = new createjs.Shape;
-          c.graphics.f("white").r(0, 0, that.W, that.H);
-          that.qipaStage.stage.addChild(c)
-        }
-        createjs.Ticker.setFPS(60);
-        setTimeout(that.setCanvasSize, 100);
-        createjs.Ticker.on("tick", that.qipaStage.stage);
-        that.qipaStage.queue.on("complete", qp_w, null, !0);
-        // h = c是图片集合， that.qipaStage.init调用时赋值
-        that.images.img && that.qipaStage.queue.loadManifest(that.images.img, !1);
-        that.qipaStage.queue.load()
-        console.log('init')
-        h = c
-      };
-      window.onresize = that.setCanvasSize;
-      that.H = 960; // canvas画布高。
-      var qp_e = 3,
-      qp_f = qp_e,
-      qp_g = 400,
-      qp_i = []
-      function genRandom(a) {
-        return parseInt(Math.random() * a)
-      }
-      /** 
-      ** qQp_A 画出钞票
-      **/
-      function drawMoney(money) {
-        this.initialize();
-        this.box = new createjs.Bitmap(that.qipaStage.queue.getResult("box"));
-        this.box.regX = this.box.getBounds().width / 2;
-        this.box.regY = this.box.getBounds().height / 3;
-        this.box.scaleX = .86;
-        this.box.scaleY = .8;
-        this.box.y = 475;
-        this.addChild(this.box);
+    //     function qp_w() {
+    //       var a = new createjs.Shape;
+    //       a.graphics.beginFill("#fbdc34").drawRect(0, 0, that.W, that.H);
+    //       that.qipaStage.stage.addChild(a);
+    //       var b = new createjs.Shape;
+    //       b.graphics.beginFill("white").rect(0, 200, that.W, that.H);
+    //       a.hitArea = b;
+    //       var c = 0,
+    //       d = 0;
+    //       a.on("mousedown", function(a) {
+    //         if (that.second <= 0) {
+    //           return
+    //         }
+    //         c = a.localY;
+    //         d = that.qipaStage.stage.player.m[qp_f].y;
+    //         that.qipaStage.stage.removeChild(that.qipaStage.stage.player)
+    //         that.qipaStage.stage.player = new drawMoney(that.HandList[that.countNum])
+    //         that.qipaStage.stage.addChild(that.qipaStage.stage.player)
+    //       });
+    //       a.on("pressmove", function(e) {
+    //         if (that.second <= 0 || c - e.localY <= 0) {
+    //           return
+    //         }
+    //          if (1 == that.gameStatus) {
+    //             that.gameStatus = 2
+    //          }
+    //          if (2 == that.gameStatus) {
+    //           that.qipaStage.stage.player.m[qp_f].visible = !0;
+    //           if (!that.qipaStage.stage.player.m[qp_f].y) {
+    //             that.qipaStage.stage.player.m[qp_f].y = 220;
+    //           }
+    //           that.qipaStage.stage.player.m[qp_f].y += (e.localY - c) / 1.5
+    //          }
+    //       });
+    //       var f = 0;
+    //       a.on("pressup", function(a) {
+    //         if (that.second <= 0) {
+    //           return
+    //         }
+    //         if (50 < c - a.localY) {
+    //           a = (new Date).getTime()
+    //           if (0 < qp_i.length && qp_i[qp_i.length - 1] + 50 > a) {
+    //           } else {
+    //             f = qp_y(a)
+    //             if (f <= 20) {
+    //               that.rewardMoney += that.HandList[that.countNum]
+    //               that.countNum++
+    //               that.qipaStage.stage.player.playAnimation(that.qipaStage.stage.player.m[qp_f])
+    //               audioPlayUtil.playOrPaused('count', that.isPlay)
+    //             } else {
+    //               qp_i.length--
+    //             }
+    //           }
+    //         } else {
+    //           qp_z(d)
+    //           that.qipaStage.stage.player.m[qp_f].visible = !1
+    //         }
+    //       });
+    //       that.drawScrollMoney()
+    //       that.backgroundTimer = setInterval(setBackground, 1E3);
+    //       that.qipaStage.stage.player = new drawMoney(that.HandList[0])
+    //       that.qipaStage.stage.addChild(that.qipaStage.stage.player)
+    //     }
+    //     that.qipaStage.stage = new createjs.Stage("stage");
+    //     that.qipaStage.queue = new createjs.LoadQueue(!1);
+    //     that.qipaStage.queue.setMaxConnections(30);
+    //     if (that.IS_TOUCH = createjs.Touch.isSupported()) {
+    //       createjs.Touch.enable(that.qipaStage.stage, !0);
+    //       that.qipaStage.stage.mouseEnabled = !1;
+    //       var c = new createjs.Shape;
+    //       c.graphics.f("white").r(0, 0, that.W, that.H);
+    //       that.qipaStage.stage.addChild(c)
+    //     }
+    //     createjs.Ticker.setFPS(60);
+    //     setTimeout(that.setCanvasSize, 100);
+    //     createjs.Ticker.on("tick", that.qipaStage.stage);
+    //     that.qipaStage.queue.on("complete", qp_w, null, !0);
+    //     // h = c是图片集合， that.qipaStage.init调用时赋值
+    //     that.images.img && that.qipaStage.queue.loadManifest(that.images.img, !1);
+    //     that.qipaStage.queue.load()
+    //     console.log('init')
+    //     h = c
+    //   };
+    //   window.onresize = that.setCanvasSize;
+    //   that.H = 960; // canvas画布高。
+    //   var qp_e = 3,
+    //   qp_f = qp_e,
+    //   qp_g = 400,
+    //   qp_i = []
+    //   function genRandom(a) {
+    //     return parseInt(Math.random() * a)
+    //   }
+    //   /** 
+    //   ** qQp_A 画出钞票
+    //   **/
+    //   function drawMoney(money) {
+    //     this.initialize();
+    //     this.box = new createjs.Bitmap(that.qipaStage.queue.getResult("box"));
+    //     this.box.regX = this.box.getBounds().width / 2;
+    //     this.box.regY = this.box.getBounds().height / 3;
+    //     this.box.scaleX = .86;
+    //     this.box.scaleY = .8;
+    //     this.box.y = 475;
+    //     this.addChild(this.box);
 
-        this.mb = new createjs.Bitmap(that.qipaStage.queue.getResult("m" + money));
-        this.mb.regX = this.mb.getBounds().width / 2;
-        this.mb.regY = this.mb.getBounds().height / 2;
-        this.mb.scaleX = .9;
-        this.mb.scaleY = .8;
-        this.mb.y = qp_g;
-        this.mb.x = -3;
-        this.x = that.W / 2;
-        this.y = that.H / 2 - 150;
-        this.addChild(this.mb);
+    //     this.mb = new createjs.Bitmap(that.qipaStage.queue.getResult("m" + money));
+    //     this.mb.regX = this.mb.getBounds().width / 2;
+    //     this.mb.regY = this.mb.getBounds().height / 2;
+    //     this.mb.scaleX = .9;
+    //     this.mb.scaleY = .8;
+    //     this.mb.y = qp_g;
+    //     this.mb.x = -3;
+    //     this.x = that.W / 2;
+    //     this.y = that.H / 2 - 150;
+    //     this.addChild(this.mb);
     
-        this.m = [];
-        for (var a = 0; 3 >= a; a++) this.m[a] = new createjs.Bitmap(that.qipaStage.queue.getResult("mb" + money)),
-        this.m[a].regX = this.m[a].getBounds().width / 2,
-        this.m[a].regY = this.m[a].getBounds().height / 2,
-        this.m[a].scaleX = .9,
-        this.m[a].scaleY = .8,
-        this.m[a].y = qp_g,
-        this.m[a].visible = !1,
-        this.addChild(this.m[a]);
-      }
-      drawMoney.prototype = new createjs.Container;
-      drawMoney.prototype.playAnimation = function(a) {
-        a.visible = !0;
-        createjs.Tween.get(a).to({
-          scaleX: 0.5,
-          scaleY: 0.5,
-          y: -that.H
-        }, 300).to({
-          visible: !1,
-          y: qp_g,
-          scaleX: 1,
-          scaleY: 1
-        }, 0);
-        0 < qp_f ? qp_f--:qp_f = qp_e
-      };
-      /** 
-      ** qp_D 背景动画设置
-      **/
-      var qp_F = 0;
-      function setBackground() {
-        for (var a = 0; a < that.moneyBgCount; a++) that.moneyBg1[qp_F][a].visible = !0,
-        createjs.Tween.get(that.moneyBg1[qp_F][a]).to({
-          y: that.H + that.moneyBg1[qp_F][a].getBounds().height / 2 + 100,
-          rotation: 720 + genRandom(400),
-          x: genRandom(that.W)
-        }, 1E3 + genRandom(800)).to({
-          visible: !1
-        }, 10).to({
-          x: genRandom(that.W),
-          y: -that.H / 2 + genRandom(that.H / 2),
-          rotation: 0
-        }, 10);
-        for (var a = 0; a < that.moneyBgCount; a++) that.moneyBg2[qp_F][a].visible = !0,
-        createjs.Tween.get(that.moneyBg2[qp_F][a]).to({
-          y: that.H + that.moneyBg2[qp_F][a].getBounds().height / 2 + 100,
-          rotation: 720 + genRandom(400),
-          x: genRandom(that.W)
-        }, 1E3 + genRandom(800)).to({
-          visible: !1
-        }, 10).to({
-          x: genRandom(that.W),
-          y: -that.H / 2 + genRandom(that.H / 2),
-          rotation: 0
-        }, 10);
-        qp_F < qp_e ? qp_F++:qp_F = 0
-      }
-      /** 
-      ** qp_y 隐藏游戏开始箭头图标
-      **/
-      function qp_y(a) {
-        var b = 0;
-        if (0 != qp_i.length) {
-          var c;
-          for (c = 0; c < qp_i.length && !(qp_i[c] > a - 1E3); c++);
-          for (var b = qp_i.length - c,
-          d = c; d < qp_i.length; d++) qp_i[d - c] = qp_i[d];
-          qp_i.length -= c
-        }
-        qp_i.push(a);
-        return parseInt(b)
-      }
-      /** 
-      ** qp_z 隐藏游戏开始箭头图标
-      **/
-      function qp_z(a) {
-        var b = Math.abs(that.qipaStage.stage.player.m[qp_f] - a);
-        createjs.Tween.get(that.qipaStage.stage.player.m[qp_f]).to({
-          y: a
-        }, 20 * b)
-      }
-      that.token ? that.getGameCounts() : null
-      audioPlayUtil.playOrPaused('click', that.isPlay)
-    },
+    //     this.m = [];
+    //     for (var a = 0; 3 >= a; a++) this.m[a] = new createjs.Bitmap(that.qipaStage.queue.getResult("mb" + money)),
+    //     this.m[a].regX = this.m[a].getBounds().width / 2,
+    //     this.m[a].regY = this.m[a].getBounds().height / 2,
+    //     this.m[a].scaleX = .9,
+    //     this.m[a].scaleY = .8,
+    //     this.m[a].y = qp_g,
+    //     this.m[a].visible = !1,
+    //     this.addChild(this.m[a]);
+    //   }
+    //   drawMoney.prototype = new createjs.Container;
+    //   drawMoney.prototype.playAnimation = function(a) {
+    //     a.visible = !0;
+    //     createjs.Tween.get(a).to({
+    //       scaleX: 0.5,
+    //       scaleY: 0.5,
+    //       y: -that.H
+    //     }, 300).to({
+    //       visible: !1,
+    //       y: qp_g,
+    //       scaleX: 1,
+    //       scaleY: 1
+    //     }, 0);
+    //     0 < qp_f ? qp_f--:qp_f = qp_e
+    //   };
+    //   /** 
+    //   ** qp_D 背景动画设置
+    //   **/
+    //   var qp_F = 0;
+    //   function setBackground() {
+    //     for (var a = 0; a < that.moneyBgCount; a++) that.moneyBg1[qp_F][a].visible = !0,
+    //     createjs.Tween.get(that.moneyBg1[qp_F][a]).to({
+    //       y: that.H + that.moneyBg1[qp_F][a].getBounds().height / 2 + 100,
+    //       rotation: 720 + genRandom(400),
+    //       x: genRandom(that.W)
+    //     }, 1E3 + genRandom(800)).to({
+    //       visible: !1
+    //     }, 10).to({
+    //       x: genRandom(that.W),
+    //       y: -that.H / 2 + genRandom(that.H / 2),
+    //       rotation: 0
+    //     }, 10);
+    //     for (var a = 0; a < that.moneyBgCount; a++) that.moneyBg2[qp_F][a].visible = !0,
+    //     createjs.Tween.get(that.moneyBg2[qp_F][a]).to({
+    //       y: that.H + that.moneyBg2[qp_F][a].getBounds().height / 2 + 100,
+    //       rotation: 720 + genRandom(400),
+    //       x: genRandom(that.W)
+    //     }, 1E3 + genRandom(800)).to({
+    //       visible: !1
+    //     }, 10).to({
+    //       x: genRandom(that.W),
+    //       y: -that.H / 2 + genRandom(that.H / 2),
+    //       rotation: 0
+    //     }, 10);
+    //     qp_F < qp_e ? qp_F++:qp_F = 0
+    //   }
+    //   /** 
+    //   ** qp_y 隐藏游戏开始箭头图标
+    //   **/
+    //   function qp_y(a) {
+    //     var b = 0;
+    //     if (0 != qp_i.length) {
+    //       var c;
+    //       for (c = 0; c < qp_i.length && !(qp_i[c] > a - 1E3); c++);
+    //       for (var b = qp_i.length - c,
+    //       d = c; d < qp_i.length; d++) qp_i[d - c] = qp_i[d];
+    //       qp_i.length -= c
+    //     }
+    //     qp_i.push(a);
+    //     return parseInt(b)
+    //   }
+    //   /** 
+    //   ** qp_z 隐藏游戏开始箭头图标
+    //   **/
+    //   function qp_z(a) {
+    //     var b = Math.abs(that.qipaStage.stage.player.m[qp_f] - a);
+    //     createjs.Tween.get(that.qipaStage.stage.player.m[qp_f]).to({
+    //       y: a
+    //     }, 20 * b)
+    //   }
+    //   that.token ? that.getGameCounts() : null
+    //   audioPlayUtil.playOrPaused('click', that.isPlay)
+    // },
     components: {
     },
     methods: {

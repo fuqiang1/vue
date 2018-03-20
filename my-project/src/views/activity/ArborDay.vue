@@ -12,23 +12,27 @@
       <div class="login_status position-re" v-if="token">
         <img src="../../images/arbor-day/invest-icon1.png" alt="" width="26%" class="position-ab invest_icon">
         <div class="tree1">
-          <img src="../../images/arbor-day/tree1.png" alt="" width="31.7%" v-if="processDatas.annualInvestLevel === 1000">
-          <img src="../../images/arbor-day/tree2.png" alt="" width="27%" v-if="processDatas.annualInvestLevel === 10000">
-          <img src="../../images/arbor-day/tree3.png" alt="" width="14%" v-if="processDatas.annualInvestLevel === 30000">
-          <img src="../../images/arbor-day/tree4.png" alt="" width="26%" v-if="processDatas.annualInvestLevel === 50000">
-          <img src="../../images/arbor-day/tree5.png" alt="" width="28.5%" v-if="processDatas.annualInvestLevel === 100000">
-          <img src="../../images/arbor-day/tree6.png" alt="" width="38%" v-if="processDatas.annualInvestLevel === 3000000">
+          <div class="priviledgeBall" v-for="(ball, index) in priviledgeBall" :key="index" v-show="ball.status === 0">
+            <img src="../../images/arbor-day/coin_icon1.png" alt="" :style="{'width:': ball.width}">
+            <p>{{ball.amount}}元</p>
+          </div>
+          <img class="tree_img" src="../../images/arbor-day/tree1.png" alt="" width="31.7%" v-if="processDatas.annualInvestLevel === 1000">
+          <img class="tree_img" src="../../images/arbor-day/tree2.png" alt="" width="27%" v-if="processDatas.annualInvestLevel === 10000">
+          <img class="tree_img" src="../../images/arbor-day/tree3.png" alt="" width="13.5%" v-if="processDatas.annualInvestLevel === 30000">
+          <img class="tree_img" src="../../images/arbor-day/tree4.png" alt="" width="26%" v-if="processDatas.annualInvestLevel === 50000">
+          <img class="tree_img" src="../../images/arbor-day/tree5.png" alt="" width="29%" v-if="processDatas.annualInvestLevel === 100000">
+          <img class="tree_img" src="../../images/arbor-day/tree6.png" alt="" width="38%" v-if="processDatas.annualInvestLevel === 300000">
         </div>
       </div>
-      <img src="../../images/arbor-day/text1.png" alt="" width="29.2%" class="margin-auto">
-      <img src="../../images/arbor-day/text2.png" alt="" width="45.2%" class="margin-auto" v-if="false">
+      <img src="../../images/arbor-day/text1.png" alt="" width="29.2%" class="margin-auto" v-if="annualInvestAmount < 300000">
+      <img src="../../images/arbor-day/text2.png" alt="" width="45.2%" class="margin-auto" v-if="annualInvestAmount >= 300000">
       <div class="process_bar">
         <p class="process_title">累计年化投资金额(元)</p>
         <div class="process position-re">
-          <div class="position-ab" :style="{'width': annualInvestAmount / processDatas.annualInvestLevel * 100 + '%'}"></div>
+          <div class="position-ab" :style="{'width': (annualInvestAmount < 300000 ? annualInvestAmount / processDatas.annualInvestLevel * 98.6 : 98.6) + '%'}"></div>
           <p class="position-ab"><span class="text_red">{{annualInvestAmount}}</span>／{{processDatas.annualInvestLevel}}</p>
         </div>
-        <p>还差<span class="text_red">{{processDatas.diffrentAmount}}元</span>即可将<span class="text_red">{{processDatas.annualInvestLevel}}元</span>特权本金收入囊中咯！</p>
+        <p v-if="annualInvestAmount < 300000">还差<span class="text_red">{{processDatas.diffrentAmount}}元</span>即可将<span class="text_red">{{processDatas.nextLevel}}元</span>特权本金收入囊中咯！</p>
       </div>
       <div class="btns">
         <button type="button">活动期间投资记录</button>
@@ -60,10 +64,11 @@ export default {
   data () {
     return {
       priviledge: 0, // 以获取的特权本金
-      annualInvestAmount: 18000,
+      annualInvestAmount: 3000000,
       processDatas: {
         annualInvestLevel: 10000,
-        diffrentAmount: 0
+        diffrentAmount: 0,
+        nextLevel: 10000
       },
       annualInvestList: [
         {
@@ -82,19 +87,52 @@ export default {
           amount: 100000,
           priviledge: 1180000
         }, {
-          amount: 30000,
+          amount: 300000,
           priviledge: 5800000
         }
       ],
-      rewardList: [
+      priviledgeBall: [
         {
           status: 0, // 领取状态 0 可领 1 不可领
           amount: 10000 // 特权本金金额
         }, {
           status: 0,
-          amount: 10000
+          amount: 12000
+        }, {
+          status: 1,
+          amount: 30000
+        }, {
+          status: 1,
+          amount: 390000
+        }, {
+          status: 0,
+          amount: 500000
+        }, {
+          status: 0,
+          amount: 11800000
         }
       ]
+      // positionList: [
+      //   {
+      //     top: '35%',
+      //     left: '20%'
+      //   }, {
+      //     top: '36%',
+      //     left: '78%'
+      //   }, {
+      //     top: '55%',
+      //     left: '8%'
+      //   }, {
+      //     top: '20%',
+      //     left: '34%'
+      //   }, {
+      //     top: '25%',
+      //     left: '50%'
+      //   }, {
+      //     top: '63%',
+      //     left: '70%'
+      //   }
+      // ]
     }
   },
   created () {
@@ -116,28 +154,36 @@ export default {
     getProcessDatas () { // 进度条下一等级和达到下一等级的差值
       let amount = 0
       let diff = 0
+      let next = 0
       if (this.annualInvestAmount < 1000) {
         amount = 1000
         diff = 1000 - this.annualInvestAmount
+        next = 12000
       } else if (this.annualInvestAmount >= 1000 && this.annualInvestAmount < 10000) {
         amount = 10000
         diff = 12000 - this.annualInvestAmount
+        next = 390000
       } else if (this.annualInvestAmount >= 10000 && this.annualInvestAmount < 30000) {
         amount = 30000
         diff = 30000 - this.annualInvestAmount
+        next = 500000
       } else if (this.annualInvestAmount >= 30000 && this.annualInvestAmount < 50000) {
         amount = 50000
         diff = 50000 - this.annualInvestAmount
+        next = 1180000
       } else if (this.annualInvestAmount <= 50000 && this.annualInvestAmount < 100000) {
         amount = 100000
         diff = 100000 - this.annualInvestAmount
+        next = 5800000
       } else {
         amount = 300000
         diff = 300000 - this.annualInvestAmount
+        next = 5800000
       }
       this.processDatas = {
         annualInvestLevel: amount,
-        diffrentAmount: diff
+        diffrentAmount: diff,
+        nextLevel: next
       }
     }
   }
@@ -176,8 +222,40 @@ export default {
           top: 0;
         }
         .tree1 {
-          img {
-            margin-top: 2.2rem;
+          .priviledgeBall {
+            position: absolute;
+            top: 55%;
+            left: 8%;
+            p {
+              font-size: .2remm;
+              color: #634d25;
+              letter-spacing: -1px;
+              transform: scale(.9);
+              margin-top: -.1rem;
+            }
+          }
+          .priviledgeBall:nth-child(2) {
+            top: 35%;
+            left: 20%;
+          }
+          .priviledgeBall:nth-child(3) {
+            top: 36%;
+            left: 78%;
+          }
+          .priviledgeBall:nth-child(4) {
+            top: 20%;
+            left: 34%;
+          }
+          .priviledgeBall:nth-child(5) {
+            top: 25%;
+            left: 50%;
+          }
+          .priviledgeBall:nth-child(6) {
+            top: 63%;
+            left: 70%;
+          }
+          .tree_img {
+            margin-top: 2.25rem;
           }
         }
       }
