@@ -4,10 +4,12 @@ body {
   margin: 0 auto;
   font-family: "微软雅黑" !important;
   overflow-x: hidden;
-  font-size: .24rem;
   font-weight: normal;
-  line-height: 1.6;
+  line-height: 1;
+  /* line-height: 1.6; */
+  /* font-size: 100px; */
   color: #222;
+  text-size-adjust:100%;
 }
 body.modal-open{
   position:fixed;
