@@ -8,6 +8,7 @@ import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
 import store from './vuex/store'
 import FastClick from 'fastclick'
+import './service/rem'
 
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function () {

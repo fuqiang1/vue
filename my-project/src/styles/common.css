@@ -1,4 +1,4 @@
-body {
+/* body {
   max-width: 7.2rem;
   height: 100%;
   margin: 0 auto;
@@ -8,6 +8,19 @@ body {
   font-weight: normal;
   line-height: 1.6;
   color: #222;
+} */
+body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, p, h1, h2, h3, h4,h5, i, b, textarea, button, input, select  {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-style: normal;
+  text-decoration: none;
+  border: none;
+  color: #222;
+  box-sizing: border-box;
+  font-weight: normal;
+  font-family: 'Microsoft YaHei';
+  -webkit-tap-highlight-color:transparent;
 }
 body.modal-open{
   position:fixed;
