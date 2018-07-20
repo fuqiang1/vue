@@ -6,6 +6,9 @@ const mutations = {
   },
   SET_TOKEN (state, token) { // 写入token
     if (token) state.token = token
+  },
+  SET_AREA (state, {areaList}) {
+    if (areaList) state.areaList = areaList
   }
 }
 export default mutations

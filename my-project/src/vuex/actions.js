@@ -1,5 +1,5 @@
-import {getActivity} from '../service/getData'
-import {bridgeUtil, Utils} from '../service/Utils'
+import {getActivity, getArea} from '../service/getData'
+import {bridgeUtil, Utils, axios} from '../service/Utils'
 const actions = {
   getActivityInfo ({commit}, act) {
     getActivity(act).then((res) => {
@@ -14,6 +14,11 @@ const actions = {
     bridgeUtil.webConnectNative('', 'HCWeb_LoginSuccess', {}, function (res) {}, function (data) {
       let t = Utils.isAndroid() ? JSON.parse(data).token : data.token
       commit('SET_TOKEN', {token: t})
+    })
+  },
+  getAreas ({commit, state}) {
+    getArea().then((res) =>{
+      commit('GET_AREA', {areaList: res.data.data})
     })
   }
 }

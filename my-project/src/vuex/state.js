@@ -4,6 +4,7 @@ const state = {
     startTime: '', // 活动开始时间
     endTime: '', // 活动结束时间
     status: 0 // 活动状态: 1 正常 2 结束
-  }
+  },
+  areaList: {}
 }
 export default state

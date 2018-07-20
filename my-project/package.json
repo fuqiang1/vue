@@ -1,8 +1,8 @@
 {
-  "name": "hongcai-front-mob-vuejs",
+  "name": "fq-mob",
   "version": "1.0.0",
-  "description": "妈妈参谋部",
-  "author": "hongcai",
+  "description": "vue-nodejs",
+  "author": "fuqiangcnpm",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -19,8 +19,23 @@
     "eslint-config-standard": "^6.2.1",
     "expre": "^0.1.1",
     "fastclick": "^1.0.6",
+    "formidable": "^1.1.1",
     "html-entities": "^1.2.0",
+    "ioredis": "^3.2.1",
     "json-server": "^0.12.1",
+    "jsonwebtoken": "^8.1.0",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^3.2.2",
+    "koa-router": "^7.2.1",
+    "koa-session2": "^2.2.5",
+    "koa-static": "^4.0.1",
+    "marked": "^0.3.6",
+    "moment": "^2.19.1",
+    "mysql": "^2.15.0",
+    "node-fetch": "^2.0.0",
+    "node-schedule": "^1.2.5",
     "strip-ansi": "^3.0.1",
     "vue": "^2.4.4",
     "vue-axios": "^2.0.2",
@@ -101,5 +116,10 @@
   "engines": {
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }

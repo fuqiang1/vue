@@ -94,7 +94,7 @@ Vue.directive('auto-height', function (el, binding) {
 </script>
 
 <style lang="css">
-  @import 'styles/common.css';
+  @import 'styles/common';
   @import 'styles/golden-mask.css';
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;

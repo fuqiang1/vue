@@ -60,7 +60,7 @@
       </div>
     </div>
     <div class="hot_area">
-      <p @click="getAreas">作者：{{$store.state.author}},年龄：{{$store.state.age}}</p>
+      <p>作者：{{$store.state.author}},年龄：{{$store.state.age}}</p>
       <button @click="$store.commit('changeName')">点击切换{{sex}}</button><br>
       <!-- 上个月第一天到最后一天 -->
       <p @click="change()">{{year}}年-{{lastMonth}}月-1日 -- {{year}}年-{{lastMonth}}月-{{lastDate}}日</p>
@@ -108,11 +108,12 @@ export default {
     }
   }, // computed属性可以在输出前，对data中的值进行改变，我们就利用这种特性把store.js中的state值赋值给我们模板中的data值。
   created() {
-    // this.getAreas();
+    this.getAreas();
     this.cacul();
-
     // console.log(mapMutations)
     // console.log(this.getMaxProfit([5, 4, 3, 4, 3]));
+    
+    
   },
   mounted() {
     swiper.init({
@@ -177,10 +178,12 @@ export default {
       // this.$http.get("http://localhost:8888/api/areas").then(res => {
       //   this.areaList = res.data.data;
       // });
-      axios.get("http://localhost:8888/api/areas").then(res => {
-        this.areaList = res.data.data;
-        console.log('aaa')
-      })
+      // axios.get("http://localhost:8888/api/areas").then(res => {
+      //   this.areaList = res.data.data;
+      // });
+      axios.get("http://localhost:8888/123").then(res => {
+        console.log(res)
+      });
     },
     toAreaDetail(name) {
       this.$router.push({ name: name });

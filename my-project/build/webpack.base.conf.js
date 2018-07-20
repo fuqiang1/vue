@@ -22,7 +22,7 @@ let webpackConfig = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json','.less'],
+    extensions: ['.js', '.vue', '.json','.less', '.css'],
     modules: [
       resolve('src'),
       resolve('node_modules')
